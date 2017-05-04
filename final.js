@@ -1,7 +1,5 @@
 var express = require('express');
 var bodyParser = require('body-parser');
-var MongoClient = require('mongodb').MongoClient;
-var ObjectID = require('mongodb').ObjectID;
 var db = require('./db');
 var eventsController = require('./controllers/events');
 var path = require('path');
@@ -37,7 +35,7 @@ var groupLongitude = [];
 var eventsArr = [];
 
 var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
-var ABC = ["в","с","до","от","2017","по","на","за","для","фестиваль","день","уроки","встреча","отдых","МК"];
+var ABC = ["в","с","до","от","2017","по","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","от"];
 
 
 app.use(bodyParser.json());
