@@ -25,7 +25,7 @@ var schedule = require('node-schedule');
 var rule = new schedule.RecurrenceRule();
 rule.hour = new schedule.Range(0, 59, 12);
 
-//var ABC = ["в","с","до","от","2017","по","на","за","для","фестиваль","день","уроки","встреча","отдых","МК"];
+
 var groupID = [];
 var groupName = [];
 var groupActivity = [];
@@ -36,8 +36,8 @@ var groupLatitude = [];
 var groupLongitude = [];
 var eventsArr = [];
 
-var CitiesID = ['96'];
-var ABC = ["в", "c"];
+var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
+var ABC = ["в","с","до","от","2017","по","на","за","для","фестиваль","день","уроки","встреча","отдых","МК"];
 
 
 app.use(bodyParser.json());
@@ -348,7 +348,7 @@ function StartRecording() {
 
         for (var c = 0; c<CitiesID.length; c++) { // цикл для сбора данных по всем городам
             cleaningGlobalValues();
-            if ((CitiesID[c] == 1) || (CitiesID[c] == 2)) {}
+            //if ((CitiesID[c] == 1) || (CitiesID[c] == 2)) {}
             for (var j = 0; j<ABC.length; j++) { // цикл для сбора данных по всем поисковым словам
                 setTimeout(parseDataViaAPI(j,c), 5000*(j+1)); // Сбор, сортировка, запись
             }
