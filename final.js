@@ -4,9 +4,7 @@ var db = require('./db');
 var eventsController = require('./controllers/events');
 var path = require('path');
 var request = require('request');
-var cheerio = require('cheerio');
 var fs = require('fs');
-var encoding = require('encoding');
 var app = express();
 const VK = require('vk-io');
 const vk = new VK({
@@ -21,7 +19,7 @@ var Nightmare = require('nightmare');
 nightmare = Nightmare({ show: true, dock: true });
 var schedule = require('node-schedule');
 var rule = new schedule.RecurrenceRule();
-rule.hour = new schedule.Range(0, 59, 12);
+rule.minute = new schedule.Range(0, 59, 1);
 
 
 var groupID = [];
@@ -34,9 +32,14 @@ var groupLatitude = [];
 var groupLongitude = [];
 var eventsArr = [];
 
-var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
-var ABC = ["в","с","до","от","2017","по","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","от"];
+//var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
+//var ABC = ["в","с","до","от","2017","по","на","за","для","фестиваль","день","уроки","встреча","отдых","МК"];
 
+var CitiesID = ['96', '153'];
+var ABC = ['в', 'с'];
+
+var email = 'ilia.fyodoroff@mail.ru';
+var password = 'zxcfghb12QLNkftMGS44078';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -63,10 +66,19 @@ function cleaningGlobalValues() {
 
 function parseDataFromSite(c) {
     return function () {
-        nightmare.goto('https://vk.com/search?c%5Bcity%5D=' + CitiesID[c] + '&c%5Bcountry%5D=1&c%5Bsection%5D=communities&c%5Bskip_catalog%5D=1&c%5Btype%5D=3')
-            .wait(2000)
-            .inject('js', './jquery_v1_10_2.js')
+        console.log('Параметр с:', c);
+        nightmare
+            .goto('https://vk.com/login')
+            .wait(1000)
+            .type('form [name=email]', email)
+            .click('input#pass')
+            .type('input#pass', password)
+            .click('button#login_button')
+            .wait(1000)
+            .goto('https://vk.com/search?c%5Bcity%5D=' + CitiesID[c] + '&c%5Bcountry%5D=1&c%5Bnot_safe%5D=1&c%5Bsection%5D=communities&c%5Btype%5D=3')
             .wait(3000)
+            .inject('js', './jquery_v1_10_2.js')
+            .wait(1500)
             .inject('js', './scrollAnimate.js')
             .wait(15000)
             .evaluate(function () {
@@ -85,15 +97,16 @@ function parseDataFromSite(c) {
                     setTimeout(() => resolve(shortNames), 1000);
                 })
             })
+            //.end()
             .then(function (result) {
                 return new Promise(function (resolve, reject) {
-                    console.info(result);
+                    console.info('Result (nightmare по городу): ',result);
                     vk.api.groups.getById({
                             group_ids: result,
                             fields: 'members_count,start_date,activity,place'
                         })
                         .then((data) => {
-                            console.log(data);
+                            //console.log(data);
 
                             /*var Event = {
                                 id: String,
@@ -132,7 +145,7 @@ function parseDataFromSite(c) {
                                     gLatitude = dataJSON[i].place.latitude;
                                     gLongitude = dataJSON[i].place.longitude;
                                 } else {
-                                    console.info('Адрес проведения мероприятий не указан организаторами');
+                                    //console.info('Адрес проведения мероприятий не указан организаторами');
                                 }
 
                                 if (dataJSON[i].is_closed == 0) {
@@ -140,30 +153,38 @@ function parseDataFromSite(c) {
                                     gMembers = dataJSON[i].members_count;
                                     gStartDate = dataJSON[i].start_date;
                                 } else {
-                                    console.info('Частное сообщество');
+                                    //console.info('Частное сообщество');
                                 }
 
-                                id.push(dataJSON[i].id);
-                                name.push(dataJSON[i].name);
-                                activity.push(gActivity);
-                                photo.push(dataJSON[i].photo_200);
-                                start.push(gStartDate);
-                                members.push(gMembers);
-                                latitude.push(gLatitude);
-                                longitude.push(gLongitude);
+                                if ((gMembers == 0) || (gMembers == 1)) {
+                                    //console.log("Число участников: ", gMembers);
+                                    //console.log("Аватар сообщества: ", dataJSON[i].photo_200);
+                                    //console.log('ПУСТОЕ СООБЩЕСТВО');
+                                } else {
+                                    id.push(dataJSON[i].id);
+                                    name.push(dataJSON[i].name);
+                                    activity.push(gActivity);
+                                    photo.push(dataJSON[i].photo_200);
+                                    start.push(gStartDate);
+                                    members.push(gMembers);
+                                    latitude.push(gLatitude);
+                                    longitude.push(gLongitude);
+                                }
+                                
 
                             }
 
-                            console.log("Длинна массива с members: ", id.length);
-                            console.log("Длинна массива с members: ", name.length);
-                            console.log("Длинна массива с members: ", activity.length);
-                            console.log("Длинна массива с members: ", photo.length);
-                            console.log("Длинна массива с members: ", start.length);
-                            console.log("Длинна массива с members: ", members.length);
-                            console.log("Длинна массива с members: ", latitude.length);
-                            console.log("Длинна массива с members: ", longitude.length);
+                            // console.log("Длинна массива с members: ", id.length);
+                            // console.log("Длинна массива с members: ", name.length);
+                            // console.log("Длинна массива с members: ", activity.length);
+                            // console.log("Длинна массива с members: ", photo.length);
+                            // console.log("Длинна массива с members: ", start.length);
+                            // console.log("Длинна массива с members: ", members.length);
+                            // console.log("Длинна массива с members: ", latitude.length);
+                            // console.log("Длинна массива с members: ", longitude.length);
 
                             for (var l=0; l<id.length; l++) {
+                                //console.log('XXXXXXX----XXXXXX', l);
                                 request.post({
                                     url: 'http://localhost:1337/events/'+CitiesID[c],
                                     form: {
@@ -180,18 +201,32 @@ function parseDataFromSite(c) {
                                     if (err) {
                                         console.log(err);
                                     } else if (body) {
-                                        console.log(body);
+                                        //console.log(body);
                                     }
                                 });
+                                
+                                if (l == id.length-1) {
+                                    resolve();
+                                    console.log('DICK');
+                                    //RemoveDoubleRequest();
+                                }
                             }
 
                             //resolve(eventsArr);
+                        })
+                        .then(() => {
+                            console.log('DICK2');
+                            console.log('Параметр "с" перед удалением дублей: ', c);
+                            RemoveDoubleRequest(c);
                         })
                 })
             })
             .catch((error) => {
                 console.error(error);
-            });
+                if (error.statusCode == 404) {
+                    parseDataFromSite(c);
+                }
+            })
     }
 }
 
@@ -219,11 +254,13 @@ function parseDataViaAPI(j,c) {
                             result.push(groupJSON.items[i].screen_name); // все id по словарю для заданного города
                         }
                         result = arrayUnique(result); // удаляем дублирующиеся данные
+                        result = result.join(',');
+
                         return result;
                     })
                     .then(function (result) {
                         return new Promise(function (resolve, reject) {
-                            console.info(result);
+                            console.info('Result (api по букве словаря): ',result);
                             vk.api.groups.getById({
                                     group_ids: result,
                                     fields: 'members_count,start_date,activity,place'
@@ -315,58 +352,71 @@ function parseDataViaAPI(j,c) {
                                 if (err) {
                                     console.log(err);
                                 } else if (body) {
-                                    console.log(body);
+                                    //console.log(body);
                                 }
                             });
                         }
                     })
             })
             //})
-            .catch(error => console.error(error))
+            .catch((error) => {
+                console.error(error);
+                if (error.statusCode == 404) {
+                    parseDataViaAPI(j,c);
+                }
+            })
     }
 }
 
 
-function RemoveDoubleRequest() {
+function RemoveDoubleRequest(c) {
     setTimeout(function () {
-        db.get().collection('cityevents').find({}, {id:1}).sort({_id:1}).forEach(function(doc) {
-            db.get().collection('cityevents').remove({
+        console.log('Запрос на удаление дублей в Mongodb');
+        db.get().collection('cityevents').find({"cityid":CitiesID[c]}, {id:1}).sort({_id:1}).forEach(function(doc) {
+            db.get().collection('cityevents').removeOne({
                 _id:{$gt:doc._id},
                 id: doc.id
             })
         });
 
-    }, 1000)
+    }, 500)
 }
 
 
-function StartRecording() {
-    return new Promise(function (resolve, reject) {
+function StartAPI() {
+    //return new Promise(function (resolve, reject) {
         cleaningGlobalValues();
 
         for (var c = 0; c<CitiesID.length; c++) { // цикл для сбора данных по всем городам
             cleaningGlobalValues();
-            //if ((CitiesID[c] == 1) || (CitiesID[c] == 2)) {}
             for (var j = 0; j<ABC.length; j++) { // цикл для сбора данных по всем поисковым словам
                 setTimeout(parseDataViaAPI(j,c), 5000*(j+1)); // Сбор, сортировка, запись
             }
 
-            setTimeout(parseDataFromSite(c), 3500*(c+1)); // Сбор, сортировка, запись
-
-            if (c == CitiesID.length-1) { resolve(); }
+            //setTimeout(parseDataFromSite(c), 25000*(c+1)); // Сбор, сортировка, запись
         }
 
-        resolve();
+    //})
+}
+
+
+function StartParse() {
+    return new Promise(function (resolve, reject) {
+
+        for (var c = 0; c<CitiesID.length; c++) { // цикл для сбора данных по всем городам
+            setTimeout(parseDataFromSite(c), 40000*(c+1)); // Сбор, сортировка, запись
+        }
+
     })
 }
 
 
+//schedule.scheduleJob(rule, function(){
+    //StartAPI();
+    StartParse();
+//});
 
-schedule.scheduleJob(rule, function(){
-    StartRecording()
-        .then(RemoveDoubleRequest)
-        .catch((error) => console.error(error))
-});
+
 
 
 

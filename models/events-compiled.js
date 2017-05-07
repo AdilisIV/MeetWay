@@ -11,7 +11,7 @@ exports.all = function (callback) {
 };
 
 exports.findById = function (id, callback) {
-    db.get().collection('cityevents').find({ cityid: String(id) }).toArray(function (err, doc) {
+    db.get().collection('cityevents').find({ cityid: String(id) }).sort({ "start": 1 }).toArray(function (err, doc) {
         callback(err, doc);
     });
 };
@@ -45,7 +45,8 @@ exports.deleteDouble = function (callback) {
             start: doc.start,
             members: doc.members,
             latitude: doc.latitude,
-            longitude: doc.longitude
+            longitude: doc.longitude,
+            description: doc.description
         });
     });
 };

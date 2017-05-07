@@ -3,12 +3,11 @@ var bodyParser = require('body-parser');
 var MongoClient = require('mongodb').MongoClient;
 var ObjectID = require('mongodb').ObjectID;
 var db = require('./../db');
-var eventsController = require('./../controllers/events');
+//var eventsController = require('./../controllers/events');
 var path = require('path');
 var request = require('request');
 var cheerio = require('cheerio');
 var fs = require('fs');
-var encoding = require('encoding');
 var app = express();
 const VK = require('vk-io');
 const vk = new VK({
@@ -20,7 +19,7 @@ const vk = new VK({
 });
 var jquery = require('jquery');
 var Nightmare = require('nightmare');
-nightmare = Nightmare({ show: true });
+nightmare = Nightmare({ show: true, dock: true });
 
 var groupID = [];
 var groupName = [];
@@ -156,7 +155,8 @@ function parseDataFromSite(c) {
     };
 }
 
-parseDataFromSite(0);
+setTimeout(parseDataFromSite(0), 3500 * 1); // Сбор, сортировка, запись
+
 
 db.connect("mongodb://localhost:27017/VK_eAPI", function (err) {
     // VK_eAPI or test
@@ -167,5 +167,21 @@ db.connect("mongodb://localhost:27017/VK_eAPI", function (err) {
         console.log("API app started");
     });
 });
+
+// .cookies.set({
+//     _ym_uid: '1480693391430570032',
+//     remixdt: '7200',
+//     remixflash: '25.0.0',
+//     remixlang: '0',
+//     remixlhk: 'b2bb8ecdcf35e20998',
+//     remixmdevice: '1366/768/1/!!-!!!!',
+//     remixrefkey: 'e6183419d1c7983866',
+//     remixscreen_depth: '24',
+//     remixseenads: '0',
+//     remixsid: 'ba872a5f3cb886f2d96ed73397c6c6e68c7d44a3aa27f4bc49ec1',
+//     remixsslsid: '1',
+//     remixstid: '1027994728_432392ce1cfdbbb4cb',
+//     remixvkcom:	'1'
+// })
 
 //# sourceMappingURL=nightmare-compiled.js.map
