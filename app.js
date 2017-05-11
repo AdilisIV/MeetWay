@@ -8,8 +8,7 @@ var request = require('request');
 var fs = require('fs');
 var app = express();
 const VK = require('vk-io');
-// +79220337451
-// OneTwoMeet
+
 const vk = new VK({
     app: 5980502,
     login: 'ilia.fyodoroff@mail.ru',
