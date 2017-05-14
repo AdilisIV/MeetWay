@@ -11,6 +11,13 @@ exports.all = function (callback) {
 };
 
 
+exports.allcities = function (callback) {
+    db.get().collection('cities').find().toArray(function (err, docs) {
+        callback(err, docs);
+    })
+};
+
+
 exports.findById = function (id, callback) {
     db.get().collection('cityevents').find({ cityid: String(id) }).sort({"start": 1}).toArray(function (err, doc) {
         callback(err, doc);
@@ -21,6 +28,15 @@ exports.findById = function (id, callback) {
 exports.create = function (event, callback) {
     db.get().collection('cityevents').insert(
         event,
+        function (err, result) {
+            callback(err, result);
+        })
+};
+
+
+exports.createCity = function (city, callback) {
+    db.get().collection('cities').insert(
+        city,
         function (err, result) {
             callback(err, result);
         })

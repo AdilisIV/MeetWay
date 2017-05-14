@@ -11,6 +11,17 @@ exports.all = function (req, res) {
 };
 
 
+exports.allcities = function (req, res) {
+    Events.allcities(function (err, docs) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(docs);
+    })
+};
+
+
 exports.findById = function (req, res) {
     Events.findById(req.params.id, function (err, doc) {
         if  (err) {
@@ -42,6 +53,22 @@ exports.create = function (req, res) {
             return res.sendStatus(500);
         }
         res.send(event);
+    })
+};
+
+
+exports.createCity = function (req, res) {
+    var city = {
+        id: req.body.id,
+        name: req.body.name
+    };
+
+    Events.createCity(city, function (err, result) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(city);
     })
 };
 
