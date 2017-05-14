@@ -8,8 +8,7 @@ var request = require('request');
 var fs = require('fs');
 var app = express();
 const VK = require('vk-io');
-// +79220337451
-// OneTwoMeet
+
 const vk = new VK({
     app: 5980502,
     login: '+79220337451',
@@ -25,10 +24,13 @@ rule.hour = new schedule.Range(0, 59, 12);
 
 
 
-//var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
+var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
+
+var CitiesName = ['Нижний Тагил','Москва','Санкт-Петербург','Волгоград','Владивосток','Хабаровск','Екатеринбург','Казань','Калининград','Краснодар','Красноярск','Нижний Новгород','Новосибирск','Омск','Пермь','Ростов-на-Дону','Самара','Уфа','Челябинск','Сочи'];
+
 var ABC = ["в","с","до","от","к","2017","по","и","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","выиграй","спектакль","кубок","приз","репост","ночь","концерт","курс","школа","шоу","турнир","розыгрыш","тренинг","интенсив","через","обучение","клуб","вечеринка","билеты","dance","street","тур","халява","забег","форум","афиша","волна","бизнес","хутор","кино","поход","фитнес","сказка","семинар","выставка","москва","of","|"];
 
-var CitiesID = ['96'];
+//var CitiesID = ['96'];
 //var ABC = ['в', 'с'];
 
 //var email = 'ilia.fyodoroff@mail.ru';
@@ -44,6 +46,27 @@ function arrayUnique(arr){
 }
 function compareStart(eventA, eventB) {
     return eventA.start - eventB.start;
+}
+
+
+function setCities() {
+    setTimeout(function(){
+        for (var l=0; l<CitiesID.length; l++) {
+            request.post({
+            url: 'http://localhost:1337/cities',
+            form: {
+                id: CitiesID[l],
+                name: CitiesName[l]
+            }
+            }, function (err, res, body) {
+                if (err) {
+                    console.log(err);
+                } else if (body) {
+                    console.log(body);
+                }
+            });
+        }
+    }, 2000);
 }
 
 
@@ -236,9 +259,9 @@ function StartAPI() {
 //});
 
 
-
-
-
+// Установка списка городов
+// Добавлены: Сочи
+setCities();
 
 // API methods
 
@@ -250,7 +273,11 @@ app.get('/events', eventsController.all);
 
 app.get('/events/:id', eventsController.findById);
 
+app.get('/cities', eventsController.allcities);
+
 app.post('/events/:cityid', eventsController.create);
+
+app.post('/cities', eventsController.createCity);
 
 //app.put('/events/:id', eventsController.update);
 
