@@ -53,7 +53,7 @@ function setCities() {
     setTimeout(function(){
         for (var l=0; l<CitiesID.length; l++) {
             request.post({
-            url: 'http://localhost:1337/cities',
+            url: 'http://localhost/cities',
             form: {
                 id: CitiesID[l],
                 name: CitiesName[l]
