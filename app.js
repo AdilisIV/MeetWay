@@ -12,9 +12,8 @@ const VK = require('vk-io');
 // OneTwoMeet
 const vk = new VK({
     app: 5980502,
-    login: 'ilia.fyodoroff@mail.ru',
-    pass: 'zxcfghb12QLNkftMGS44078',
-    phone: '+79220291925',
+    login: '+79220337451',
+    pass: 'OneTwoMeet',
     scope: 'stats,notifications,groups,wall,pages,friends,offline,photos,market'
 });
 var jquery = require('jquery');
@@ -155,7 +154,7 @@ function parseDataViaAPI(j,c) {
                                     for (var l=0; l<id.length; l++) {
                                         //console.log('XXXXXXX----XXXXXX', l);
                                         request.post({
-                                            url: 'http://localhost:1337/events/'+CitiesID[c],
+                                            url: 'http://localhost/events/'+CitiesID[c],
                                             form: {
                                                 id: id[l],
                                                 name: name[l],
@@ -233,7 +232,7 @@ function StartAPI() {
 
 
 //schedule.scheduleJob(rule, function(){
-StartAPI();
+//StartAPI();
 //});
 
 
@@ -262,7 +261,7 @@ app.delete('events/remove', eventsController.deleteDouble);
 
 db.connect("mongodb://localhost:27017/VK_eAPI", function (err) { // VK_eAPI or test
     if(err) { return console.log(err); }
-    app.listen(1337, function () {
+    app.listen(80, function () {
         console.log("API app started");
     });
 });
