@@ -23,17 +23,17 @@ var schedule = require('node-schedule');
 var rule = new schedule.RecurrenceRule();
 rule.hour = new schedule.Range(0, 59, 12);
 
-var CitiesID = ['96', '1', '2', '10', '37', '153', '49', '60', '61', '72', '73', '95', '99', '104', '110', '119', '123', '151', '158', '133'];
+//var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
 
 var CitiesName = ['Нижний Тагил', 'Москва', 'Санкт-Петербург', 'Волгоград', 'Владивосток', 'Хабаровск', 'Екатеринбург', 'Казань', 'Калининград', 'Краснодар', 'Красноярск', 'Нижний Новгород', 'Новосибирск', 'Омск', 'Пермь', 'Ростов-на-Дону', 'Самара', 'Уфа', 'Челябинск', 'Сочи'];
 
 var ABC = ["в", "с", "до", "от", "к", "2017", "по", "и", "на", "за", "для", "фестиваль", "день", "уроки", "встреча", "отдых", "МК", "выиграй", "спектакль", "кубок", "приз", "репост", "ночь", "концерт", "курс", "школа", "шоу", "турнир", "розыгрыш", "тренинг", "интенсив", "через", "обучение", "клуб", "вечеринка", "билеты", "dance", "street", "тур", "халява", "забег", "форум", "афиша", "волна", "бизнес", "хутор", "кино", "поход", "фитнес", "сказка", "семинар", "выставка", "москва", "of", "|"];
 
-//var CitiesID = ['96'];
+var CitiesID = ['96'];
 //var ABC = ['в', 'с'];
 
-//var email = 'ilia.fyodoroff@mail.ru';
-//var password = 'zxcfghb12QLNkftMGS44078';
+var email = 'ilia.fyodoroff@mail.ru';
+var password = 'zxcfghb12QLNkftMGS44078';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -110,6 +110,7 @@ function parseDataViaAPI(j, c) {
                     var latitude = [];
                     var longitude = [];
                     var description = [];
+                    var screenname = [];
 
                     var gLatitude = 0;
                     var gLongitude = 0;
@@ -123,12 +124,20 @@ function parseDataViaAPI(j, c) {
 
                     for (var i = 0; i < dataJSON.length; i++) {
 
+                        var DoubleNameBool = false;
+
                         var place = dataJSON[i].place;
                         if (place) {
                             gLatitude = dataJSON[i].place.latitude;
                             gLongitude = dataJSON[i].place.longitude;
                         } else {
                             //console.info('Адрес проведения мероприятий не указан организаторами');
+                        }
+
+                        if (i < dataJSON.length - 1) {
+                            if (dataJSON[i].name == dataJSON[i + 1].name) {
+                                DoubleNameBool = true;
+                            }
                         }
 
                         if (dataJSON[i].is_closed == 0) {
@@ -142,10 +151,11 @@ function parseDataViaAPI(j, c) {
                         if (dataJSON[i].description != "") {
                             gDescription = dataJSON[i].description;
                         } else {
-                            console.info('У сообщества нет описания', dataJSON[i].id);
+                            //console.info('У сообщества нет описания', dataJSON[i].id);
                         }
 
-                        if (gMembers == 0 || gMembers == 1) {
+                        if (gMembers == 0 || gMembers == 1 || dataJSON[i].is_closed == 1 || DoubleNameBool) {
+                            console.log("ID Частного сообщества: ", dataJSON[i].id);
                             //console.log("Число участников: ", gMembers);
                             //console.log("Аватар сообщества: ", dataJSON[i].photo_200);
                             //console.log('ПУСТОЕ СООБЩЕСТВО');
@@ -159,6 +169,7 @@ function parseDataViaAPI(j, c) {
                             latitude.push(gLatitude);
                             longitude.push(gLongitude);
                             description.push(gDescription);
+                            screenname.push("https://m.vk.com/club" + dataJSON[i].id);
                         }
                     }
 
@@ -175,7 +186,8 @@ function parseDataViaAPI(j, c) {
                                 members: members[l],
                                 latitude: latitude[l],
                                 longitude: longitude[l],
-                                description: description[l]
+                                description: description[l],
+                                screenname: screenname[l]
                             }
                         }, function (err, res, body) {
                             if (err) {
@@ -236,13 +248,13 @@ function StartAPI() {
 }
 
 //schedule.scheduleJob(rule, function(){
-//StartAPI();
+StartAPI();
 //});
 
 
 // Установка списка городов
 // Добавлены: Сочи
-setCities();
+//setCities();
 
 // API methods
 
