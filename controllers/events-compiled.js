@@ -41,7 +41,8 @@ exports.create = function (req, res) {
         members: Number(req.body.members),
         latitude: Number(req.body.latitude),
         longitude: Number(req.body.longitude),
-        description: req.body.description
+        description: req.body.description,
+        screenname: req.body.screenname
     };
 
     Events.create(event, function (err, result) {

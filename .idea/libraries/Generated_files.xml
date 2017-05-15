@@ -21,6 +21,7 @@
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/node_modules/cron-parser/lib/expression-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/node_modules/cron-parser/test/expression-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/lodash.merge/index-compiled.js" />
+        <item url="file://$PROJECT_DIR$/trash/server-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/lodash.some/index-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/cron-parser/lib/date-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-crontab/test/crontab-compiled.js" />
@@ -209,6 +210,7 @@
       <root url="file://$PROJECT_DIR$/node_modules/vue/dist/vue.runtime.common-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/vue/dist/vue.common-compiled.js" />
       <root url="file://$PROJECT_DIR$/trash/app-compiled.js" />
+      <root url="file://$PROJECT_DIR$/trash/app-compiled.js" />
       <root url="file://$PROJECT_DIR$/trash/play2-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/sorted-array-functions/test-compiled.js" />
       <root url="file://$PROJECT_DIR$/trash/nightmare-compiled.js" />
@@ -357,7 +359,6 @@
       <root url="file://$PROJECT_DIR$/node_modules/dom-serializer/index-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/domelementtype/index-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/dom-serializer/node_modules/domelementtype/index-compiled.js" />
-      <root url="file://$PROJECT_DIR$/trash/app-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/node-schedule/test/es6/job-test-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/sorted-array-functions/example-compiled.js" />
       <root url="file://$PROJECT_DIR$/trash/parser-compiled.js" />

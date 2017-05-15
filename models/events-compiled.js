@@ -5,7 +5,7 @@ var ObjectID = require('mongodb').ObjectID;
 var db = require('../db');
 
 exports.all = function (callback) {
-    db.get().collection('cityevents').find().sort({ "start": 1 }).toArray(function (err, docs) {
+    db.get().collection('cityevents').find().sort({ "start": 1 }).limit(400).toArray(function (err, docs) {
         callback(err, docs);
     });
 };
@@ -58,7 +58,8 @@ exports.deleteDouble = function (callback) {
             members: doc.members,
             latitude: doc.latitude,
             longitude: doc.longitude,
-            description: doc.description
+            description: doc.description,
+            screenname: doc.screenname
         });
     });
 };

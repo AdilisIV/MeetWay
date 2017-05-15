@@ -60,7 +60,7 @@ function parseDataFromSite(c) {
 
         console.log('shortNames:', shortNames);
 
-        //shortNames = shortNames.join(',');
+        shortNames = shortNames.join(',');
 
         return shortNames;
     }).then(function (result) {
