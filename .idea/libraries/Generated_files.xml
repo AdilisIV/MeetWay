@@ -9,7 +9,10 @@
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/test/start-end-test-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/test/job-test-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/test/recurrence-rule-test-compiled.js" />
+        <item url="file://$PROJECT_DIR$/trash/vksdk_ex-compiled.js" />
+        <item url="file://$PROJECT_DIR$/trash/refactorApp-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/lib/schedule-compiled.js" />
+        <item url="file://$PROJECT_DIR$/trash/playgroung-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/test/date-convenience-methods-test-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/node_modules/cron-parser/lib/date-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/node_modules/cron-parser/lib/parser-compiled.js" />
@@ -44,6 +47,7 @@
         <item url="file://$PROJECT_DIR$/node_modules/css-select/lib/pseudos-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/css-select/lib/general-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/css-select/lib/compile-compiled.js" />
+        <item url="file://$PROJECT_DIR$/models/vk_login-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/css-select/lib/sort-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/entities/index-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/entities/test/test-compiled.js" />
@@ -130,8 +134,8 @@
         <item url="file://$PROJECT_DIR$/node_modules/domutils/test/utils-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/domutils/test/fixture-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/vo/lib/stack-compiled.js" />
-        <item url="file://$PROJECT_DIR$/node_modules/domutils/lib/manipulation-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/vo/bin/vo-compiled.js" />
+        <item url="file://$PROJECT_DIR$/node_modules/domutils/lib/manipulation-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/vo/lib/type-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/lodash.reject/index-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/lodash.bind/index-compiled.js" />
@@ -145,6 +149,7 @@
         <item url="file://$PROJECT_DIR$/node_modules/dom-serializer/node_modules/domelementtype/index-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/test/es6/job-test-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/sorted-array-functions/example-compiled.js" />
+        <item url="file://$PROJECT_DIR$/trash/parser-compiled.js" />
         <item url="file://$PROJECT_DIR$/node_modules/node-schedule/test/range-test-compiled.js" />
         <item url="file://$PROJECT_DIR$/controllers/events-compiled.js" />
         <item url="file://$PROJECT_DIR$/final-compiled.js" />
@@ -260,6 +265,7 @@
       <root url="file://$PROJECT_DIR$/node_modules/css-select/lib/pseudos-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/css-select/lib/general-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/css-select/lib/compile-compiled.js" />
+      <root url="file://$PROJECT_DIR$/models/vk_login-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/css-select/lib/sort-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/entities/index-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/entities/test/test-compiled.js" />
@@ -346,8 +352,8 @@
       <root url="file://$PROJECT_DIR$/node_modules/domutils/test/utils-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/domutils/test/fixture-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/vo/lib/stack-compiled.js" />
-      <root url="file://$PROJECT_DIR$/node_modules/domutils/lib/manipulation-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/vo/bin/vo-compiled.js" />
+      <root url="file://$PROJECT_DIR$/node_modules/domutils/lib/manipulation-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/vo/lib/type-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/lodash.reject/index-compiled.js" />
       <root url="file://$PROJECT_DIR$/node_modules/lodash.bind/index-compiled.js" />
