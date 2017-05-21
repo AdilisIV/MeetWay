@@ -33,6 +33,17 @@ exports.findById = function (req, res) {
 };
 
 
+exports.eventById = function (req, res) {
+    Events.eventById(req.params.id, function (err, doc) {
+        if  (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    })
+};
+
+
 exports.create = function (req, res) {
     var event = {
         cityid: String(req.params.cityid),

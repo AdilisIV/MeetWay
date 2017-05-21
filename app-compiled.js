@@ -248,7 +248,7 @@ function StartAPI() {
 }
 
 //schedule.scheduleJob(rule, function(){
-StartAPI();
+//StartAPI();
 //});
 
 
@@ -265,6 +265,8 @@ app.get('/', function (req, res) {
 app.get('/events', eventsController.all);
 
 app.get('/events/:id', eventsController.findById);
+
+app.get('/events/eventbyid/:id', eventsController.eventById);
 
 app.get('/cities', eventsController.allcities);
 

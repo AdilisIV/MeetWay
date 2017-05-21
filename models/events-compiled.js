@@ -22,6 +22,12 @@ exports.findById = function (id, callback) {
     });
 };
 
+exports.eventById = function (id, callback) {
+    db.get().collection('cityevents').find({ id: String(id) }).toArray(function (err, doc) {
+        callback(err, doc);
+    });
+};
+
 exports.create = function (event, callback) {
     db.get().collection('cityevents').insert(event, function (err, result) {
         callback(err, result);
