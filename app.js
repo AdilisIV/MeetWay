@@ -11,14 +11,8 @@ const VK = require('vk-io');
 
 const vk = new VK({
     app: 5980502,
-<<<<<<< HEAD
     login: '+79220337451',
     pass: 'OneTwoMeet',
-=======
-    login: '',
-    pass: '',
-    phone: '',
->>>>>>> 6529655a45ac96dcefc1bd347d8dd6bca515b04a
     scope: 'stats,notifications,groups,wall,pages,friends,offline,photos,market'
 });
 var jquery = require('jquery');
@@ -38,9 +32,6 @@ var ABC = ["в","с","до","от","к","2017","по","и","на","за","для
 
 var CitiesID = ['96'];
 //var ABC = ['в', 'с'];
-
-var email = 'ilia.fyodoroff@mail.ru';
-var password = 'zxcfghb12QLNkftMGS44078';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -274,15 +265,9 @@ function StartAPI() {
 }
 
 
-<<<<<<< HEAD
 schedule.scheduleJob(rule, function(){
 	StartAPI();
 });
-=======
-//schedule.scheduleJob(rule, function(){
-//StartAPI();
-//});
->>>>>>> 6529655a45ac96dcefc1bd347d8dd6bca515b04a
 
 
 // Установка списка городов
