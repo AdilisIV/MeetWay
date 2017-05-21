@@ -268,9 +268,9 @@ function StartAPI() {
 }
 
 
-//schedule.scheduleJob(rule, function(){
-StartAPI();
-//});
+schedule.scheduleJob(rule, function(){
+	StartAPI();
+});
 
 
 // Установка списка городов
