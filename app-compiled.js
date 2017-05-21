@@ -11,9 +11,9 @@ const VK = require('vk-io');
 
 const vk = new VK({
     app: 5980502,
-    login: 'ilia.fyodoroff@mail.ru',
-    pass: 'zxcfghb12QLNkftMGS44078',
-    phone: '+79220291925',
+    login: '',
+    pass: '',
+    phone: '',
     scope: 'stats,notifications,groups,wall,pages,friends,offline,photos,market'
 });
 var jquery = require('jquery');
@@ -248,7 +248,7 @@ function StartAPI() {
 }
 
 //schedule.scheduleJob(rule, function(){
-StartAPI();
+//StartAPI();
 //});
 
 
@@ -265,6 +265,8 @@ app.get('/', function (req, res) {
 app.get('/events', eventsController.all);
 
 app.get('/events/:id', eventsController.findById);
+
+app.get('/events/eventbyid/:id', eventsController.eventById);
 
 app.get('/cities', eventsController.allcities);
 

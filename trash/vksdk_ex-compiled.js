@@ -1,23 +1,4 @@
-var VK = require('vksdk');
-var vk = new VK({
-    'appId': 5980502,
-    'appSecret': '56MUqOcp0f4XMzEIwoaF', // 45e0e76c9a94f6744d // 56MUqOcp0f4XMzEIwoaF
-    'language': 'ru',
-    'mode': 'auth'
-});
-vk.setToken('794cf59ce9dfd15743138040a315bc9d507eaf4ccf8f4fed7b05e9a9da53979d8f407ddb00cb284d2a5fb');
 
-vk.request('groups.search', {
-    'q': 'в',
-    'type': 'event',
-    'city_id': '69',
-    'future': '1',
-    'offset': '0',
-    'count': '1000'
-});
-vk.on('done:groups.search', function (res) {
-    console.log(res);
-});
 
 var ABC = ["в", "с", "до", "от", "2017", "по", "на", "за", "для", "фестиваль", "день", "уроки", "встреча", "отдых", "МК"];
 

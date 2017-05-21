@@ -11,8 +11,14 @@ const VK = require('vk-io');
 
 const vk = new VK({
     app: 5980502,
+<<<<<<< HEAD
     login: '+79220337451',
     pass: 'OneTwoMeet',
+=======
+    login: '',
+    pass: '',
+    phone: '',
+>>>>>>> 6529655a45ac96dcefc1bd347d8dd6bca515b04a
     scope: 'stats,notifications,groups,wall,pages,friends,offline,photos,market'
 });
 var jquery = require('jquery');
@@ -268,9 +274,15 @@ function StartAPI() {
 }
 
 
+<<<<<<< HEAD
 schedule.scheduleJob(rule, function(){
 	StartAPI();
 });
+=======
+//schedule.scheduleJob(rule, function(){
+//StartAPI();
+//});
+>>>>>>> 6529655a45ac96dcefc1bd347d8dd6bca515b04a
 
 
 // Установка списка городов
@@ -286,6 +298,8 @@ app.get('/', function (req, res) {
 app.get('/events', eventsController.all);
 
 app.get('/events/:id', eventsController.findById);
+
+app.get('/events/eventbyid/:id', eventsController.eventById);
 
 app.get('/cities', eventsController.allcities);
 
