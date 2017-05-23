@@ -11,9 +11,9 @@ const VK = require('vk-io');
 
 const vk = new VK({
     app: 5980502,
-    login: '',
-    pass: '',
-    phone: '',
+    login: 'ilia.fyodoroff@mail.ru',
+    pass: 'zxcfghb12QLNkftMGS44078',
+    //phone: '',
     scope: 'stats,notifications,groups,wall,pages,friends,offline,photos,market'
 });
 var jquery = require('jquery');
@@ -253,6 +253,11 @@ function RemoveDoubleDocuments(c) {
 
 
 function StartAPI() {
+
+    setTimeout(function() {
+        db.get().collection('cityevents').remove({}) // clear collection
+    }, 1000)
+
     auth.run()
         .then((token) => {
             console.log('User token:', token);
@@ -266,11 +271,12 @@ function StartAPI() {
             setTimeout(parseDataViaAPI(j,c), 1000*(j+1)); // Сбор, сортировка, запись
         }
     }
+
 }
 
 
 //schedule.scheduleJob(rule, function(){
-//StartAPI();
+StartAPI();
 //});
 
 
@@ -305,7 +311,7 @@ app.delete('events/remove', eventsController.deleteDouble);
 
 db.connect("mongodb://localhost:27017/VK_eAPI", function (err) { // VK_eAPI or test
     if(err) { return console.log(err); }
-    app.listen(1337, function () {
+    app.listen(1338, function () {
         console.log("API app started");
     });
 });
