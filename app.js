@@ -249,6 +249,11 @@ function RemoveDoubleDocuments(c) {
 
 
 function StartAPI() {
+
+    setTimeout(function() {
+        db.get().collection('cityevents').remove({}) // clear collection
+    }, 1000)
+
     auth.run()
         .then((token) => {
             console.log('User token:', token);
@@ -262,7 +267,9 @@ function StartAPI() {
             setTimeout(parseDataViaAPI(j,c), 1000*(j+1)); // Сбор, сортировка, запись
         }
     }
+
 }
+
 
 
 schedule.scheduleJob(rule, function(){
