@@ -238,7 +238,7 @@ function RemoveDoubleDocuments(c) {
     setTimeout(function () {
         console.log('Запрос на удаление дублей в Mongodb');
         db.get().collection('cityevents').find({"cityid":CitiesID[c]}, {id:1}).sort({_id:1}).forEach(function(doc) {
-            db.get().collection('cityevents').removeOne({
+            db.get().collection('cityevents').remove({
                 _id:{$gt:doc._id},
                 id: doc.id
             })
