@@ -11,8 +11,9 @@ const VK = require('vk-io');
 
 const vk = new VK({
     app: 5980502,
-    login: '+79220337451',
-    pass: 'OneTwoMeet',
+    login: 'ilia.fyodoroff@mail.ru',
+    pass: 'zxcfghb12QLNkftMGS44078',
+    phone: '+79220291925',
     scope: 'stats,notifications,groups,wall,pages,friends,offline,photos,market'
 });
 var jquery = require('jquery');
