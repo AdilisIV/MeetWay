@@ -1,12 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="ee7147e5-f7d2-4c25-aafc-0bfb53539578" name="Default" comment="first test of final version">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app-compiled.js.map" afterPath="$PROJECT_DIR$/app-compiled.js.map" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app-compiled.js" afterPath="$PROJECT_DIR$/app-compiled.js" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
-    </list>
+    <list default="true" id="ee7147e5-f7d2-4c25-aafc-0bfb53539578" name="Default" comment="first test of final version" />
     <ignored path="$PROJECT_DIR$/.tmp/" />
     <ignored path="$PROJECT_DIR$/temp/" />
     <ignored path="$PROJECT_DIR$/tmp/" />
@@ -351,12 +346,12 @@
       <workItem from="1495363274102" duration="1547000" />
       <workItem from="1495525766522" duration="3662000" />
       <workItem from="1495533687592" duration="1090000" />
-      <workItem from="1495535377106" duration="1526000" />
+      <workItem from="1495535377106" duration="1653000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="274241000" />
+    <option name="totallyTimeSpent" value="274368000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
