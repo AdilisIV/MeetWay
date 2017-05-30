@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ee7147e5-f7d2-4c25-aafc-0bfb53539578" name="Default" comment="first test of final version">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app-compiled.js" afterPath="$PROJECT_DIR$/app-compiled.js" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app-compiled.js.map" afterPath="$PROJECT_DIR$/app-compiled.js.map" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/app.js" afterPath="$PROJECT_DIR$/app.js" />
@@ -30,8 +29,8 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="225">
-              <caret line="15" column="26" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+            <state relative-caret-position="330">
+              <caret line="31" column="441" selection-start-line="31" selection-start-column="441" selection-end-line="31" selection-end-column="441" />
               <folding />
             </state>
           </provider>
@@ -318,12 +317,12 @@
       <workItem from="1495533687592" duration="1090000" />
       <workItem from="1495535377106" duration="1653000" />
       <workItem from="1496152073839" duration="113000" />
-      <workItem from="1496152262509" duration="4916000" />
+      <workItem from="1496152262509" duration="5063000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="279397000" />
+    <option name="totallyTimeSpent" value="279544000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -667,8 +666,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="225">
-          <caret line="15" column="26" selection-start-line="15" selection-start-column="26" selection-end-line="15" selection-end-column="26" />
+        <state relative-caret-position="330">
+          <caret line="31" column="441" selection-start-line="31" selection-start-column="441" selection-end-line="31" selection-end-column="441" />
           <folding />
         </state>
       </provider>
