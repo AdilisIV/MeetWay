@@ -11,9 +11,8 @@ const VK = require('vk-io');
 
 const vk = new VK({
     app: 5980502,
-    login: 'ilia.fyodoroff@mail.ru',
-    pass: 'zxcfghb12QLNkftMGS44078',
-    //phone: '',
+    login: '+79220337451',
+    pass: 'OneTwoMeet',
     scope: 'stats,notifications,groups,wall,pages,friends,offline,photos,market'
 });
 var jquery = require('jquery');
@@ -21,7 +20,7 @@ var Nightmare = require('nightmare');
 nightmare = Nightmare({ show: true, dock: true });
 var schedule = require('node-schedule');
 var rule = new schedule.RecurrenceRule();
-rule.hour = new schedule.Range(0, 59, 12);
+rule.hour = new schedule.Range(0, 59, 4);
 
 //var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
 
@@ -30,10 +29,6 @@ var CitiesName = ['Нижний Тагил', 'Москва', 'Санкт-Пет�
 var ABC = ["в", "с", "до", "от", "к", "2017", "по", "и", "на", "за", "для", "фестиваль", "день", "уроки", "встреча", "отдых", "МК", "выиграй", "спектакль", "кубок", "приз", "репост", "ночь", "концерт", "курс", "школа", "шоу", "турнир", "розыгрыш", "тренинг", "интенсив", "через", "обучение", "клуб", "вечеринка", "билеты", "dance", "street", "тур", "халява", "забег", "форум", "афиша", "волна", "бизнес", "хутор", "кино", "поход", "фитнес", "сказка", "семинар", "выставка", "москва", "of", "|"];
 
 var CitiesID = ['96'];
-//var ABC = ['в', 'с'];
-
-var email = 'ilia.fyodoroff@mail.ru';
-var password = 'zxcfghb12QLNkftMGS44078';
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -68,20 +63,16 @@ function setCities() {
 
 function parseDataViaAPI(j, c) {
     return function () {
-        // auth.run()
-        //     .then((token) => {
-        //         console.log('User token:', token);
-        //         vk.setToken(token);
         vk.api.groups.search({
-            q: ABC[j], // j
+            q: ABC[j],
             type: 'event',
-            city_id: CitiesID[c], // c
+            city_id: CitiesID[c],
             future: 1,
             offset: 0,
             count: 1000
         }).then(group => {
             var result = [];
-            console.log('Первое поиское слово: ', ABC[j]); // j
+            console.log('Первое поиское слово: ', ABC[j]);
             var groupObj = JSON.stringify(group);
             var groupJSON = JSON.parse(groupObj);
             for (var i = 0; i < groupJSON.items.length; i++) {
@@ -93,13 +84,11 @@ function parseDataViaAPI(j, c) {
             return result;
         }).then(function (result) {
             return new Promise(function (resolve, reject) {
-                //console.info('Result (api по букве словаря): ',result);
                 vk.api.groups.getById({
                     group_ids: result,
                     fields: 'members_count,start_date,activity,place,description'
                 }).then(data => {
                     //console.log(data);
-                    //cleaningGlobalValues();
 
                     var id = [];
                     var name = [];
@@ -155,10 +144,7 @@ function parseDataViaAPI(j, c) {
                         }
 
                         if (gMembers == 0 || gMembers == 1 || dataJSON[i].is_closed == 1 || DoubleNameBool) {
-                            console.log("ID Частного сообщества: ", dataJSON[i].id);
-                            //console.log("Число участников: ", gMembers);
-                            //console.log("Аватар сообщества: ", dataJSON[i].photo_200);
-                            //console.log('ПУСТОЕ СООБЩЕСТВО');
+                            console.log("ID пустого сообщества: ", dataJSON[i].id);
                         } else {
                             id.push(dataJSON[i].id);
                             name.push(dataJSON[i].name);
@@ -174,7 +160,6 @@ function parseDataViaAPI(j, c) {
                     }
 
                     for (var l = 0; l < id.length; l++) {
-                        //console.log('XXXXXXX----XXXXXX', l);
                         request.post({
                             url: 'http://localhost:1337/events/' + CitiesID[c],
                             form: {
@@ -199,12 +184,9 @@ function parseDataViaAPI(j, c) {
 
                         if (l == id.length - 1) {
                             resolve();
-                            console.log('DICK');
-                            //RemoveDoubleRequest();
                         }
                     }
                 }).then(() => {
-                    console.log('DICK2');
                     console.log('Параметр "с" перед удалением дублей: ', c);
                     RemoveDoubleDocuments(c);
                 });
@@ -212,10 +194,6 @@ function parseDataViaAPI(j, c) {
         }).catch(error => {
             console.error(error);
         });
-        //})
-        // .catch((error) => {
-        //     console.error(error);
-        // })
     };
 }
 
@@ -247,7 +225,7 @@ function StartAPI() {
         // цикл для сбора данных по всем городам
         for (var j = 0; j < ABC.length; j++) {
             // цикл для сбора данных по всем поисковым словам
-            setTimeout(parseDataViaAPI(j, c), 1000 * (j + 1)); // Сбор, сортировка, запись
+            setTimeout(parseDataViaAPI(j, c), 3000 * (j + 1)); // Сбор, сортировка, запись
         }
     }
 }
@@ -264,7 +242,7 @@ StartAPI();
 // API methods
 
 app.get('/', function (req, res) {
-    res.send("OneTwoMeet.ru started!");
+    res.send("Server started!");
 });
 
 app.get('/events', eventsController.all);
@@ -285,12 +263,12 @@ app.post('/cities', eventsController.createCity);
 
 app.delete('events/remove', eventsController.deleteDouble);
 
-db.connect("mongodb://localhost:27017/VK_eAPI", function (err) {
+db.connect("mongodb://localhost:27017/eventsDB", function (err) {
     // VK_eAPI or test
     if (err) {
         return console.log(err);
     }
-    app.listen(1338, function () {
+    app.listen(1337, function () {
         console.log("API app started");
     });
 });
