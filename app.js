@@ -1,4 +1,3 @@
-
 var express = require('express');
 var bodyParser = require('body-parser');
 var db = require('./db');
@@ -25,11 +24,11 @@ rule.hour = new schedule.Range(0, 59, 4);
 
 
 
-//var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
+var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
 
 var CitiesName = ['Нижний Тагил','Москва','Санкт-Петербург','Волгоград','Владивосток','Хабаровск','Екатеринбург','Казань','Калининград','Краснодар','Красноярск','Нижний Новгород','Новосибирск','Омск','Пермь','Ростов-на-Дону','Самара','Уфа','Челябинск','Сочи'];
 
-var ABC = ["в","с","до","от","к","2017","по","и","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","выиграй","спектакль","кубок","приз","репост","ночь","концерт","курс","школа","шоу","турнир","розыгрыш","тренинг","интенсив","через","обучение","клуб","вечеринка","билеты","dance","street","тур","халява","забег","форум","афиша","волна","бизнес","хутор","кино","поход","фитнес","сказка","семинар","выставка","москва","of","|"];
+var ABC = ["в","с","до","от","к","2017","по","и","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","выиграй","спектакль","кубок","приз","репост","ночь","концерт","турнир","розыгрыш","тренинг","интенсив","через","клуб","забег","бизнес","хутор","поход","фитнес","сказка","семинар","выставка"];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -66,7 +65,7 @@ function setCities() {
 
 
 function parseDataViaAPI(j,c) {
-    return function () {
+    //return function () {
         vk.api.groups.search({
                 q: ABC[j],
                 type: 'event',
@@ -209,7 +208,7 @@ function parseDataViaAPI(j,c) {
             .catch((error) => {
                 console.error(error);
             })
-    }
+    //}
 }
 
 
@@ -241,11 +240,66 @@ function StartAPI() {
         .catch((error) => {
             console.error(error);
         })
-    for (var c = 0; c<CitiesID.length; c++) { // цикл для сбора данных по всем городам
-        for (var j = 0; j<ABC.length; j++) { // цикл для сбора данных по всем поисковым словам
-            setTimeout(parseDataViaAPI(j,c), 3000*(j+1)); // Сбор, сортировка, запись
-        }
-    }
+    //for (var c = 0; c<CitiesID.length; c++) { // цикл для сбора данных по всем городам
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,0); }
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,1); }
+        }, 80000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,2); }
+        }, 160000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,3); }
+        }, 240000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,4); }
+        }, 320000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,5); }
+        }, 400000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,6); }
+        }, 480000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,7); }
+        }, 560000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,8); }
+        }, 640000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,9); }
+        }, 720000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,10); }
+        }, 800000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,11); }
+        }, 880000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,12); }
+        }, 960000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,13); }
+        }, 1040000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,14); }
+        }, 1120000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,15); }
+        }, 1200000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,16); }
+        }, 1280000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,17); }
+        }, 1360000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,18); }
+        }, 1440000)
+        setTimeout(function () {
+            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,19); }
+        }, 1520000)
+    //}
 
 }
 
