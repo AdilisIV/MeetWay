@@ -240,71 +240,16 @@ function StartAPI() {
         .catch((error) => {
             console.error(error);
         })
-    //for (var c = 0; c<CitiesID.length; c++) { // цикл для сбора данных по всем городам
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,0); }
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,1); }
-        }, 80000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,2); }
-        }, 160000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,3); }
-        }, 240000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,4); }
-        }, 320000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,5); }
-        }, 400000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,6); }
-        }, 480000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,7); }
-        }, 560000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,8); }
-        }, 640000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,9); }
-        }, 720000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,10); }
-        }, 800000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,11); }
-        }, 880000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,12); }
-        }, 960000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,13); }
-        }, 1040000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,14); }
-        }, 1120000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,15); }
-        }, 1200000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,16); }
-        }, 1280000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,17); }
-        }, 1360000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,18); }
-        }, 1440000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,19); }
-        }, 1520000)
-    //}
+    for (var c = 0; c<CitiesID.length; c++) { // цикл для сбора данных по всем городам
+        for (var j = 0; j<ABC.length; j++) { // цикл для сбора данных по всем поисковым словам
+            setTimeout(parseDataViaAPI(j,c), 3000*(j+1)); // Сбор, сортировка, запись
+        }
+    }
 
 }
 
 //schedule.scheduleJob(rule, function(){
-StartAPI();
+//StartAPI();
 //});
 
 
