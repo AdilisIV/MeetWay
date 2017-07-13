@@ -24,11 +24,13 @@ rule.hour = new schedule.Range(0, 59, 4);
 
 
 
-var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
+//var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
 
 var CitiesName = ['Нижний Тагил','Москва','Санкт-Петербург','Волгоград','Владивосток','Хабаровск','Екатеринбург','Казань','Калининград','Краснодар','Красноярск','Нижний Новгород','Новосибирск','Омск','Пермь','Ростов-на-Дону','Самара','Уфа','Челябинск','Сочи'];
 
-var ABC = ["в","с","до","от","к","2017","по","и","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","выиграй","спектакль","кубок","приз","репост","ночь","концерт","турнир","розыгрыш","тренинг","интенсив","через","клуб","забег","бизнес","хутор","поход","фитнес","сказка","семинар","выставка"];
+//var ABC = ["в","с","до","от","к","2017","по","и","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","выиграй","спектакль","кубок","приз","репост","ночь","концерт","турнир","розыгрыш","тренинг","интенсив","через","клуб","забег","бизнес","хутор","поход","фитнес","сказка","семинар","выставка"];
+
+
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,8 +43,6 @@ function arrayUnique(arr){
 function compareStart(eventA, eventB) {
     return eventA.start - eventB.start;
 }
-
-
 function setCities() {
     setTimeout(function(){
         for (var l=0; l<CitiesID.length; l++) {
@@ -62,156 +62,6 @@ function setCities() {
         }
     }, 2000);
 }
-
-
-function parseDataViaAPI(j,c) {
-    //return function () {
-        vk.api.groups.search({
-                q: ABC[j],
-                type: 'event',
-                city_id: CitiesID[c],
-                future: 1,
-                offset: 0,
-                count: 1000
-            })
-            .then((group) => {
-                var result = [];
-                console.log('Первое поиское слово: ', ABC[j]);
-                var groupObj = JSON.stringify(group);
-                var groupJSON = JSON.parse(groupObj);
-                for (var i = 0; i < groupJSON.items.length; i++) {
-                    result.push(groupJSON.items[i].screen_name); // все id по словарю для заданного города
-                }
-                result = arrayUnique(result); // удаляем дублирующиеся данные
-                result = result.join(',');
-
-                return result;
-            })
-            .then(function (result) {
-                return new Promise(function (resolve, reject) {
-                    vk.api.groups.getById({
-                            group_ids: result,
-                            fields: 'members_count,start_date,activity,place,description'
-                        })
-                        .then((data) => {
-                            //console.log(data);
-
-                            var id = [];
-                            var name = [];
-                            var activity = [];
-                            var photo = [];
-                            var start = [];
-                            var members = [];
-                            var latitude = [];
-                            var longitude = [];
-                            var description = [];
-                            var screenname = [];
-
-                            var gLatitude = 0;
-                            var gLongitude = 0;
-                            var gMembers = 0;
-                            var gActivity = "Данные недоступны";
-                            var gStartDate = 2001513200;
-                            var gDescription = "Упс, видимо организаторы мероприятия решили не добавлять описание. :(";
-
-
-
-                            var dataObj = JSON.stringify(data);
-                            var dataJSON = JSON.parse(dataObj);
-
-
-                            for (var i = 0; i < dataJSON.length; i++) {
-
-                                var DoubleNameBool = false;
-
-                                var place = dataJSON[i].place;
-                                if (place) {
-                                    gLatitude = dataJSON[i].place.latitude;
-                                    gLongitude = dataJSON[i].place.longitude;
-                                } else {
-                                    //console.info('Адрес проведения мероприятий не указан организаторами');
-                                }
-
-                                if(i < dataJSON.length-1) {
-                                    if (dataJSON[i].name == dataJSON[i+1].name) {
-                                        DoubleNameBool = true;
-                                    }
-                                }
-
-                                if (dataJSON[i].is_closed == 0) {
-                                    gActivity = dataJSON[i].activity;
-                                    gMembers = dataJSON[i].members_count;
-                                    gStartDate = dataJSON[i].start_date;
-                                } else {
-                                    //console.info('Частное сообщество');
-                                }
-
-                                if(dataJSON[i].description != "") {
-                                    gDescription = dataJSON[i].description;
-                                } else {
-                                    //console.info('У сообщества нет описания', dataJSON[i].id);
-                                }
-
-                                if ((gMembers == 0) || (gMembers == 1) || (dataJSON[i].is_closed == 1) || DoubleNameBool) {
-                                    console.log("ID пустого сообщества: ", dataJSON[i].id);
-                                } else {
-                                    id.push(dataJSON[i].id);
-                                    name.push(dataJSON[i].name);
-                                    activity.push(gActivity);
-                                    photo.push(dataJSON[i].photo_200);
-                                    start.push(gStartDate);
-                                    members.push(gMembers);
-                                    latitude.push(gLatitude);
-                                    longitude.push(gLongitude);
-                                    description.push(gDescription);
-                                    screenname.push("https://m.vk.com/club" + dataJSON[i].id);
-                                }
-
-
-                            }
-
-                            for (var l=0; l<id.length; l++) {
-                                request.post({
-                                    url: 'http://localhost:1337/events/'+CitiesID[c],
-                                    form: {
-                                        id: id[l],
-                                        name: name[l],
-                                        activity: activity[l],
-                                        photo: photo[l],
-                                        start: start[l],
-                                        members: members[l],
-                                        latitude: latitude[l],
-                                        longitude: longitude[l],
-                                        description: description[l],
-                                        screenname: screenname[l]
-                                    }
-                                }, function (err, res, body) {
-                                    if (err) {
-                                        console.log(err);
-                                    } else if (body) {
-                                        //console.log(body);
-                                    }
-                                });
-
-                                if (l == id.length-1) {
-                                    resolve();
-                                }
-                            }
-
-                        })
-                        .then(() => {
-                            console.log('Параметр "с" перед удалением дублей: ', c);
-                            RemoveDoubleDocuments(c);
-                        })
-                })
-            })
-            .catch((error) => {
-                console.error(error);
-            })
-    //}
-}
-
-
 function RemoveDoubleDocuments(c) {
     setTimeout(function () {
         console.log('Запрос на удаление дублей в Mongodb');
@@ -224,6 +74,117 @@ function RemoveDoubleDocuments(c) {
 
     }, 1000)
 }
+
+
+
+
+function parseDataViaAPI(j,c) {
+    vk.api.groups.search({
+        q: ABC[j],
+        type: 'event',
+        city_id: CitiesID[c],
+        future: 1,
+        offset: 0,
+        count: 1000
+    })
+        .then((group) => {
+            var result = [];
+            console.log('Поиское слово: ', ABC[j]);
+
+            var groupObj = JSON.stringify(group);
+            var groupJSON = JSON.parse(groupObj);
+            for (var i = 0; i < groupJSON.items.length; i++) {
+                result.push(groupJSON.items[i].screen_name); // все id по словарю для заданного города
+            }
+            result = arrayUnique(result); // удаляем дублирующиеся данные
+            result = result.join(',');
+
+            return result;
+        })
+        .then(function (result) {
+            //console.log(result)
+            vk.api.groups.getById({
+                group_ids: result,
+                fields: 'members_count,start_date,activity,place,description'
+            })
+                .then((data) => {
+                    var dataObj = JSON.stringify(data);
+                    var dataJSON = JSON.parse(dataObj);
+
+                    var id = [];
+                    var name = [];
+                    var activity = [];
+                    var photo = [];
+                    var start = [];
+                    var members = [];
+                    var latitude = [];
+                    var longitude = [];
+                    var description = [];
+                    var screenname = [];
+
+                    for (var i = 0; i < dataJSON.length; i++) {
+                        if ((dataJSON[i].members_count > 4) || (dataJSON[i].is_closed == 0)) {
+                            if (dataJSON[i].place) {
+                                latitude.push(dataJSON[i].place.latitude);
+                                longitude.push(dataJSON[i].place.longitude);
+                            } else {
+                                latitude.push(0);
+                                longitude.push(0);
+                            }
+
+                            if(dataJSON[i].description != "") {
+                                description.push(dataJSON[i].description);
+                            } else {
+                                description.push("Упс, видимо организаторы мероприятия решили не добавлять описание. :(");
+                            }
+
+                            id.push(dataJSON[i].id);
+                            name.push(dataJSON[i].name);
+                            activity.push(dataJSON[i].activity);
+                            photo.push(dataJSON[i].photo_200);
+                            start.push(dataJSON[i].start_date);
+                            members.push(dataJSON[i].members_count);
+                            screenname.push("https://m.vk.com/club" + dataJSON[i].id);
+                        }
+                    }
+
+                    for (var l=0; l<id.length; l++) {
+                        request.post({
+                            url: 'http://localhost:1337/events/'+CitiesID[c],
+                            form: {
+                                id: id[l],
+                                name: name[l],
+                                activity: activity[l],
+                                photo: photo[l],
+                                start: start[l],
+                                members: members[l],
+                                latitude: latitude[l],
+                                longitude: longitude[l],
+                                description: description[l],
+                                screenname: screenname[l]
+                            }
+                        }, function (err, res, body) {
+                            if (err) {
+                                console.log(err);
+                            } else if (body) {
+                                console.log(body);
+                            }
+                        });
+                    }
+                })
+                .then(() => {
+                    console.log('Параметр "с" перед удалением дублей: ', c);
+                    RemoveDoubleDocuments(c);
+                })
+        })
+        .catch((error) => {
+            console.error(error);
+        })
+}
+
+
+var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73'];
+var ABC = ["в","с","до","от","к","2017","по","и","на","за","для"];
 
 
 function StartAPI() {
@@ -240,67 +201,13 @@ function StartAPI() {
         .catch((error) => {
             console.error(error);
         })
-    //for (var c = 0; c<CitiesID.length; c++) { // цикл для сбора данных по всем городам
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,0); }
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,1); }
-        }, 80000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,2); }
-        }, 160000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,3); }
-        }, 240000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,4); }
-        }, 320000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,5); }
-        }, 400000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,6); }
-        }, 480000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,7); }
-        }, 560000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,8); }
-        }, 640000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,9); }
-        }, 720000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,10); }
-        }, 800000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,11); }
-        }, 880000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,12); }
-        }, 960000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,13); }
-        }, 1040000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,14); }
-        }, 1120000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,15); }
-        }, 1200000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,16); }
-        }, 1280000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,17); }
-        }, 1360000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,18); }
-        }, 1440000)
-        setTimeout(function () {
-            for (var j = 0; j<ABC.length; j++) { parseDataViaAPI(j,19); }
-        }, 1520000)
-    //}
-
+        .then(() => {
+            for (var c = 0; c<CitiesID.length; c++) {
+                for (var j = 0; j<ABC.length; j++) {
+                    parseDataViaAPI(j,c);
+                }
+            }
+        })
 }
 
 //schedule.scheduleJob(rule, function(){
