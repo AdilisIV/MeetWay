@@ -30,11 +30,9 @@
       <file leaf-file-name="app.js" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/app.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="372">
-              <caret line="359" column="39" selection-start-line="359" selection-start-column="39" selection-end-line="359" selection-end-column="39" />
-              <folding>
-                <element signature="n#!!block;n#setCities#0" expanded="false" />
-              </folding>
+            <state relative-caret-position="164">
+              <caret line="50" column="35" selection-start-line="50" selection-start-column="35" selection-end-line="50" selection-end-column="35" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -317,12 +315,12 @@
       <workItem from="1496152262509" duration="10776000" />
       <workItem from="1496282107574" duration="7951000" />
       <workItem from="1499927702740" duration="15837000" />
-      <workItem from="1500048825045" duration="3120000" />
+      <workItem from="1500048825045" duration="3483000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="312165000" />
+    <option name="totallyTimeSpent" value="312528000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -586,11 +584,9 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/app.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="372">
-          <caret line="359" column="39" selection-start-line="359" selection-start-column="39" selection-end-line="359" selection-end-column="39" />
-          <folding>
-            <element signature="n#!!block;n#setCities#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="164">
+          <caret line="50" column="35" selection-start-line="50" selection-start-column="35" selection-end-line="50" selection-end-column="35" />
+          <folding />
         </state>
       </provider>
     </entry>

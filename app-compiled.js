@@ -25,9 +25,9 @@ var schedule = require('node-schedule');
 var rule = new schedule.RecurrenceRule();
 rule.hour = new schedule.Range(0, 59, 4);
 
-//var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
+var CitiesID = ['96', '1', '2', '10', '37', '153', '49', '60', '61', '72', '73', '95', '99', '104', '110', '119', '123', '151', '158', '133', '506'];
 
-var CitiesName = ['Нижний Тагил', 'Москва', 'Санкт-Петербург', 'Волгоград', 'Владивосток', 'Хабаровск', 'Екатеринбург', 'Казань', 'Калининград', 'Краснодар', 'Красноярск', 'Нижний Новгород', 'Новосибирск', 'Омск', 'Пермь', 'Ростов-на-Дону', 'Самара', 'Уфа', 'Челябинск', 'Сочи'];
+var CitiesName = ['Нижний Тагил', 'Москва', 'Санкт-Петербург', 'Волгоград', 'Владивосток', 'Хабаровск', 'Екатеринбург', 'Казань', 'Калининград', 'Краснодар', 'Красноярск', 'Нижний Новгород', 'Новосибирск', 'Омск', 'Пермь', 'Ростов-на-Дону', 'Самара', 'Уфа', 'Челябинск', 'Сочи', "Санкт-Петербург-506"];
 
 //var ABC = ["в","с","до","от","к","2017","по","и","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","выиграй","спектакль","кубок","приз","репост","ночь","концерт","турнир","розыгрыш","тренинг","интенсив","через","клуб","забег","бизнес","хутор","поход","фитнес","сказка","семинар","выставка"];
 
@@ -44,6 +44,9 @@ function compareStart(eventA, eventB) {
 }
 function setCities() {
     setTimeout(function () {
+
+        db.get().collection('cities').remove({}); // clear collection
+
         for (var l = 0; l < CitiesID.length; l++) {
             request.post({
                 url: 'http://localhost/cities',
@@ -86,6 +89,9 @@ function RemoveDoubleDocuments(c) {
 
 function insertDocuments() {
     setTimeout(function () {
+
+        db.get().collection('cityevents').remove({}); // clear collection
+
         db.get().collection('cityevents').insert({
             "cityid": "506",
             "id": "110931219",
@@ -157,8 +163,6 @@ function insertDocuments() {
         });
     }, 1000);
 }
-
-insertDocuments();
 
 var func = function (c) {
     return function () {
@@ -302,7 +306,9 @@ function StartAPI() {
 
 // Установка списка городов
 // Добавлены: Сочи
-//setCities();
+setCities();
+//insertDocuments();
+
 
 // API methods
 
