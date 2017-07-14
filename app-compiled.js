@@ -7,14 +7,17 @@ var request = require('request');
 var fs = require('fs');
 var app = express();
 const VK = require('vk-io');
+const { RequestError } = require('vk-io/errors'); // Возникает при проблемах в соединении или ответа сервера с ошибкой
 
 const vk = new VK({
     app: 5980502,
     login: 'ilia.fyodoroff@mail.ru',
     pass: 'zxcfghb12QLNkftMGS44078',
     phone: '+79220291925',
-    scope: 'stats,notifications,groups,wall,pages,friends,offline,photos,market'
+    scope: 'stats,notifications,groups,wall,pages,friends,offline,photos,market',
+    limit: 2
 });
+
 var jquery = require('jquery');
 var Nightmare = require('nightmare');
 nightmare = Nightmare({ show: true, dock: true });
@@ -65,112 +68,138 @@ function RemoveDoubleDocuments(c) {
             db.get().collection('cityevents').remove({
                 _id: { $gt: doc._id },
                 id: doc.id
+            }).catch(err => {
+                console.error("Ошибка запросе на удаление дублей: ", err);
             });
         });
-    }, 1000);
-}
 
-function parseDataViaAPI(j, c) {
-    vk.api.groups.search({
-        q: ABC[j],
-        type: 'event',
-        city_id: CitiesID[c],
-        future: 1,
-        offset: 0,
-        count: 1000
-    }).then(group => {
-        var result = [];
-        console.log('Поиское слово: ', ABC[j]);
-
-        var groupObj = JSON.stringify(group);
-        var groupJSON = JSON.parse(groupObj);
-        for (var i = 0; i < groupJSON.items.length; i++) {
-            result.push(groupJSON.items[i].screen_name); // все id по словарю для заданного города
-        }
-        result = arrayUnique(result); // удаляем дублирующиеся данные
-        result = result.join(',');
-
-        return result;
-    }).then(function (result) {
-        //console.log(result)
-        vk.api.groups.getById({
-            group_ids: result,
-            fields: 'members_count,start_date,activity,place,description'
-        }).then(data => {
-            var dataObj = JSON.stringify(data);
-            var dataJSON = JSON.parse(dataObj);
-
-            var id = [];
-            var name = [];
-            var activity = [];
-            var photo = [];
-            var start = [];
-            var members = [];
-            var latitude = [];
-            var longitude = [];
-            var description = [];
-            var screenname = [];
-
-            for (var i = 0; i < dataJSON.length; i++) {
-                if (dataJSON[i].members_count > 4 || dataJSON[i].is_closed == 0) {
-                    if (dataJSON[i].place) {
-                        latitude.push(dataJSON[i].place.latitude);
-                        longitude.push(dataJSON[i].place.longitude);
-                    } else {
-                        latitude.push(0);
-                        longitude.push(0);
-                    }
-
-                    if (dataJSON[i].description != "") {
-                        description.push(dataJSON[i].description);
-                    } else {
-                        description.push("Упс, видимо организаторы мероприятия решили не добавлять описание. :(");
-                    }
-
-                    id.push(dataJSON[i].id);
-                    name.push(dataJSON[i].name);
-                    activity.push(dataJSON[i].activity);
-                    photo.push(dataJSON[i].photo_200);
-                    start.push(dataJSON[i].start_date);
-                    members.push(dataJSON[i].members_count);
-                    screenname.push("https://m.vk.com/club" + dataJSON[i].id);
-                }
-            }
-
-            for (var l = 0; l < id.length; l++) {
-                request.post({
-                    url: 'http://localhost:1337/events/' + CitiesID[c],
-                    form: {
-                        id: id[l],
-                        name: name[l],
-                        activity: activity[l],
-                        photo: photo[l],
-                        start: start[l],
-                        members: members[l],
-                        latitude: latitude[l],
-                        longitude: longitude[l],
-                        description: description[l],
-                        screenname: screenname[l]
-                    }
-                }, function (err, res, body) {
-                    if (err) {
-                        console.log(err);
-                    } else if (body) {
-                        console.log(body);
-                    }
-                });
-            }
-        }).then(() => {
-            console.log('Параметр "с" перед удалением дублей: ', c);
-            RemoveDoubleDocuments(c);
+        db.get().collection('cityevents').find({ "cityid": CitiesID[c] }, { name: 1 }).sort({ _id: 1 }).forEach(function (doc) {
+            db.get().collection('cityevents').remove({
+                _id: { $gt: doc._id },
+                name: doc.name
+            }).catch(err => {
+                console.error("Ошибка запросе на удаление дублей: ", err);
+            });
         });
-    }).catch(error => {
-        console.error(error);
-    });
+    }, 100);
 }
 
-var CitiesID = ['96', '1', '2', '10', '37', '153', '49', '60', '61', '72', '73'];
-var ABC = ["в", "с", "до", "от", "к", "2017", "по", "и", "на", "за", "для"];
+var func = function (c) {
+    return function () {
+        for (var j = 0; j < ABC.length; j++) {
+            vk.api.groups.search({
+                q: ABC[j],
+                type: 'event',
+                city_id: CitiesID[c],
+                future: 1,
+                offset: 0,
+                count: 1000
+            }).catch(RequestError, error => {
+                console.error(`RequestError error №${error.code} ${error.message}`);
+            }).catch(error => {
+                console.error(error);
+            }).then(group => {
+                var result = [];
+                console.log('Поиское слово: ', ABC[j]);
+
+                var groupObj = JSON.stringify(group);
+                var groupJSON = JSON.parse(groupObj);
+                for (var i = 0; i < groupJSON.items.length; i++) {
+                    result.push(groupJSON.items[i].screen_name); // все id по словарю для заданного города
+                }
+                result = arrayUnique(result); // удаляем дублирующиеся данные
+                result = result.join(',');
+
+                return result;
+            }).then(function (result) {
+                //console.log(result)
+                vk.api.groups.getById({
+                    group_ids: result,
+                    fields: 'members_count,start_date,activity,place,description'
+                }).catch(RequestError, error => {
+                    console.error(`RequestError error №${error.code} ${error.message}`);
+                }).catch(error => {
+                    console.error(error);
+                }).then(data => {
+                    var dataObj = JSON.stringify(data);
+                    var dataJSON = JSON.parse(dataObj);
+
+                    var id = [];
+                    var name = [];
+                    var activity = [];
+                    var photo = [];
+                    var start = [];
+                    var members = [];
+                    var latitude = [];
+                    var longitude = [];
+                    var description = [];
+                    var screenname = [];
+
+                    for (var i = 0; i < dataJSON.length; i++) {
+                        if (dataJSON[i].members_count > 4 || dataJSON[i].is_closed == 0) {
+                            if (dataJSON[i].place) {
+                                latitude.push(dataJSON[i].place.latitude);
+                                longitude.push(dataJSON[i].place.longitude);
+                            } else {
+                                latitude.push(0);
+                                longitude.push(0);
+                            }
+
+                            if (dataJSON[i].description != "") {
+                                description.push(dataJSON[i].description);
+                            } else {
+                                description.push("Упс, видимо организаторы мероприятия решили не добавлять описание. :(");
+                            }
+
+                            id.push(dataJSON[i].id);
+                            name.push(dataJSON[i].name);
+                            activity.push(dataJSON[i].activity);
+                            photo.push(dataJSON[i].photo_200);
+                            start.push(dataJSON[i].start_date);
+                            members.push(dataJSON[i].members_count);
+                            screenname.push("https://m.vk.com/club" + dataJSON[i].id);
+                        }
+                    }
+
+                    for (var l = 0; l < id.length; l++) {
+                        request.post({
+                            url: 'http://localhost:3306/events/' + CitiesID[c],
+                            form: {
+                                id: id[l],
+                                name: name[l],
+                                activity: activity[l],
+                                photo: photo[l],
+                                start: start[l],
+                                members: members[l],
+                                latitude: latitude[l],
+                                longitude: longitude[l],
+                                description: description[l],
+                                screenname: screenname[l]
+                            }
+                        }, function (err, res, body) {
+                            if (err) {
+                                console.log(err);
+                            } else if (body) {
+                                //console.log(body);
+                            }
+                        });
+                    }
+                }).then(() => {
+                    console.log('Параметр "с" перед удалением дублей: ', c);
+                    RemoveDoubleDocuments(c);
+                }).catch(error => {
+                    console.error(error);
+                });
+            }).catch(error => {
+                console.error(error);
+            });
+        }
+    };
+};
+
+//var CitiesID = ['96','1','2','10','37','153','49','60'];
+var CitiesID = ['49'];
+var ABC = ["в", "с", "до", "от", "фестиваль"];
 
 function StartAPI() {
 
@@ -185,15 +214,13 @@ function StartAPI() {
         console.error(error);
     }).then(() => {
         for (var c = 0; c < CitiesID.length; c++) {
-            for (var j = 0; j < ABC.length; j++) {
-                parseDataViaAPI(j, c);
-            }
+            setTimeout(func(c), 15000 * c);
         }
     });
 }
 
 //schedule.scheduleJob(rule, function(){
-StartAPI();
+//StartAPI();
 //});
 
 
@@ -225,12 +252,20 @@ app.post('/cities', eventsController.createCity);
 
 app.delete('events/remove', eventsController.deleteDouble);
 
+app.use(function (err, req, res, next) {
+    res.status(err.status || 500);
+});
+
+app.on('error', function (message) {
+    console.error("[ERROR]: ", message);
+});
+
 db.connect("mongodb://localhost:27017/eventsDB", function (err) {
     // VK_eAPI or test
     if (err) {
         return console.log(err);
     }
-    app.listen(1337, function () {
+    app.listen(3306, function () {
         console.log("API app started");
     });
 });

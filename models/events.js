@@ -5,7 +5,7 @@ var ObjectID = require('mongodb').ObjectID;
 var db = require('../db');
 
 exports.all = function (callback) {
-    db.get().collection('cityevents').find().sort({"start": 1}).limit(400).toArray(function (err, docs) {
+    db.get().collection('cityevents').find().sort({"start": 1}).limit(1000).toArray(function (err, docs) {
         callback(err, docs);
     })
 };
@@ -19,7 +19,7 @@ exports.allcities = function (callback) {
 
 
 exports.findById = function (id, callback) {
-    db.get().collection('cityevents').find({ cityid: String(id) }).sort({"start": 1}).toArray(function (err, doc) {
+    db.get().collection('cityevents').find({ cityid: String(id) }).sort({"start": 1}).limit(400).toArray(function (err, doc) {
         callback(err, doc);
     })
 };
