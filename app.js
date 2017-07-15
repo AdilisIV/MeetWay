@@ -128,7 +128,7 @@ function insertDocuments() {
             "id": "150196755",
             "name": "Рисование вином и дегустация. СПБ - 21 июля",
             "activity": "21 июл 2017 в 13:00",
-            "photo": "https://pp.userapi.com/c638830/v638830146/4892c/3FcZ2QQzK6M.jpg",
+            "photo": "https://pp.userapi.com/c638830/v638830146/4893e/i4-NkrRqsvs.jpg",
             "start": 1500634800,
             "members": 5,
             "latitude": 0,
