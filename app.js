@@ -292,7 +292,7 @@ var func = function (c) {
 
 
 //var CitiesID = ['96','1','2','10','37','153','49','60'];
-var CitiesID = ['49'];
+//var CitiesID = ['49'];
 var ABC = ["в","с","до","от","фестиваль"];
 
 
@@ -325,8 +325,8 @@ function StartAPI() {
 
 // Установка списка городов
 // Добавлены: Сочи
-setCities();
-//insertDocuments();
+//setCities();
+insertDocuments();
 
 
 
