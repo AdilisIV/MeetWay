@@ -86,7 +86,8 @@ exports.createCity = function (req, res) {
 
 
 exports.update = function (req, res) {
-    Events.update(req.params.id, { name: req.body.name }, function (err, result) {
+    Events.update(req.params.id, { $set: {commerce: req.body.commerce} },
+        function (err, result) {
         if (err) {
             console.log(err);
             return res.sendStatus(500);
@@ -94,7 +95,6 @@ exports.update = function (req, res) {
         res.sendStatus(200);
     })
 };
-
 
 exports.delete = function (req, res) {
     Events.delete(req.params.id, function (err, result) {

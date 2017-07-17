@@ -41,7 +41,7 @@ exports.createCity = function (city, callback) {
 };
 
 exports.update = function (id, newData, callback) {
-    db.get().collection('cityevents').updateOne({ _id: ObjectID(id) }, newData, function (err, result) {
+    db.get().collection('cityevents').updateOne({ id: id }, newData, function (err, result) {
         callback(err, result);
     });
 };

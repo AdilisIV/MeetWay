@@ -105,7 +105,8 @@ function insertDocuments() {
             "latitude": 59.932378,
             "longitude": 30.321042,
             "description": "Что общего между наукой, искусством, модой, архитектурой, косметикой и едой? Все эти сферы могут быть экологичными - созданными с заботой о природе и человеке. На большом фестивале экологии Представь Зелёное гости смогут:  - Посетить познавательные лекции, эко-маркет, выставки арт-объектов, кинопоказы, спектакли о планете и концерты;  - Поиграть в настольные эко-игры и квесты;  - Поучаствовать в круглых столах, мастер-классах по рециклинг-творчеству и в кулинарных вегетарианских мастер-классах от общественных организаций и заведений города.",
-            "screenname": "https://m.vk.com/club27823606"
+            "screenname": "https://m.vk.com/club27823606",
+            "commerce": false
         });
 
         db.get().collection('cityevents').insert({
@@ -119,7 +120,8 @@ function insertDocuments() {
             "latitude": 59.92887,
             "longitude": 30.344219,
             "description": "Интеллигентная барахолка – дизайн-маркет с четырехлетней историей, особой атмосферой и непростым характером; большой, нарядный и разношерстный праздник экзальтированных дам, понаехавших денди и петербургских модников.",
-            "screenname": "https://m.vk.com/club32814569"
+            "screenname": "https://m.vk.com/club32814569",
+            "commerce": false
         });
 
         db.get().collection('cityevents').insert({
@@ -133,7 +135,8 @@ function insertDocuments() {
             "latitude": 0,
             "longitude": 0,
             "description": "Новый проект от [club96773634|Студии Рисования&#9679;ZUART&#9679;] и винного клуба [club147593638|ART of Wine]! Арт-дегустация – это новый формат мероприятия, соединяющий в себе живопись и винное искусство. В этот вечер мы продегустируем 3 бутылочки изысканного вина и нарисуем картину вином! Наш проект создан для творческих людей, кто увлекается искусством, современными техниками рисования и кто любит дегустировать эксклюзивные вина или хотел бы научиться в них разбираться.",
-            "screenname": "https://m.vk.com/club150196755"
+            "screenname": "https://m.vk.com/club150196755",
+            "commerce": false
         });
 
         db.get().collection('cityevents').insert({
@@ -147,7 +150,8 @@ function insertDocuments() {
             "latitude": 59.950767,
             "longitude": 30.245988,
             "description": "– Ваша любимая веганская еда и продукция этичных производителей; – интересные лекции и полезные мастер-классы; – спорт, веселье, игры и общение; – игровая и образовательная программа для деток; – дегустации, конкурсы и подарки! Вход бесплатный!",
-            "screenname": "https://m.vk.com/club78907820"
+            "screenname": "https://m.vk.com/club78907820",
+            "commerce": false
         });
     }, 1000);
 }
@@ -202,6 +206,7 @@ var func = function (c) {
                     var longitude = [];
                     var description = [];
                     var screenname = [];
+                    var commerce = [];
 
                     for (var i = 0; i < dataJSON.length; i++) {
                         if (dataJSON[i].members_count > 4 || dataJSON[i].is_closed == 0) {
@@ -226,12 +231,13 @@ var func = function (c) {
                             start.push(dataJSON[i].start_date);
                             members.push(dataJSON[i].members_count);
                             screenname.push("https://m.vk.com/club" + dataJSON[i].id);
+                            commerce.push(false);
                         }
                     }
 
                     for (var l = 0; l < id.length; l++) {
                         request.post({
-                            url: 'http://localhost/events/' + CitiesID[c],
+                            url: 'http://localhost:1337/events/' + CitiesID[c],
                             form: {
                                 id: id[l],
                                 name: name[l],
@@ -242,7 +248,8 @@ var func = function (c) {
                                 latitude: latitude[l],
                                 longitude: longitude[l],
                                 description: description[l],
-                                screenname: screenname[l]
+                                screenname: screenname[l],
+                                commerce: commerce[l]
                             }
                         }, function (err, res, body) {
                             if (err) {
@@ -295,7 +302,8 @@ function StartAPI() {
 // Установка списка городов
 // Добавлены: Сочи
 //setCities();
-insertDocuments();
+//insertDocuments();
+
 
 // API methods
 
@@ -315,9 +323,9 @@ app.post('/events/:cityid', eventsController.create);
 
 app.post('/cities', eventsController.createCity);
 
-//app.put('/events/:id', eventsController.update);
+app.put('/events/eventbyid/:id', eventsController.update);
 
-//app.delete('/events/:id', eventsController.delete);
+app.delete('/events/:id', eventsController.delete);
 
 app.delete('events/remove', eventsController.deleteDouble);
 
@@ -334,7 +342,7 @@ db.connect("mongodb://localhost:27017/eventsDB", function (err) {
     if (err) {
         return console.log(err);
     }
-    app.listen(80, function () {
+    app.listen(1337, function () {
         console.log("API app started");
     });
 });
