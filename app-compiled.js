@@ -319,6 +319,8 @@ app.get('/events/eventbyid/:id', eventsController.eventById);
 
 app.get('/cities', eventsController.allcities);
 
+app.get('/events/eventsByTime/:cityid/:x/:y', eventsController.eventsByTime);
+
 app.post('/events/:cityid', eventsController.create);
 
 app.post('/cities', eventsController.createCity);

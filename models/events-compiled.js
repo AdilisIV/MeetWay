@@ -28,6 +28,16 @@ exports.eventById = function (id, callback) {
     });
 };
 
+// > db.users.find( { age: { $gte: 18, $lte: 30 } } );
+
+// Получаем всех пользователей, возраст которых больше 18 и меньше 30
+
+exports.eventsByTime = function (cityid, x, y, callback) {
+    db.get().collection('cityevents').find({ cityid: cityid, start: { $gte: Number(x), $lte: Number(y) } }).toArray(function (err, doc) {
+        callback(err, doc);
+    });
+};
+
 exports.create = function (event, callback) {
     db.get().collection('cityevents').insert(event, function (err, result) {
         callback(err, result);
