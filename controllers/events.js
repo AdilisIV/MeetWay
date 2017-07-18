@@ -67,7 +67,8 @@ exports.create = function (req, res) {
         latitude: Number(req.body.latitude),
         longitude: Number(req.body.longitude),
         description: req.body.description,
-        screenname: req.body.screenname
+        screenname: req.body.screenname,
+	commerce: Boolean(req.body.commerce)
     };
 
     Events.create(event, function (err, result) {

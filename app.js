@@ -241,13 +241,13 @@ var func = function (c) {
                                     start.push(dataJSON[i].start_date);
                                     members.push(dataJSON[i].members_count);
                                     screenname.push("https://m.vk.com/club" + dataJSON[i].id);
-                                    commerce.push(false);
+                                    commerce.push(true);
                                 }
                             }
 
                             for (var l=0; l<id.length; l++) {
                                 request.post({
-                                    url: 'http://localhost:1337/events/'+CitiesID[c],
+                                    url: 'http://localhost/events/'+CitiesID[c],
                                     form: {
                                         id: id[l],
                                         name: name[l],
@@ -313,7 +313,7 @@ function StartAPI() {
 }
 
 //schedule.scheduleJob(rule, function(){
-//StartAPI();
+StartAPI();
 //});
 
 
@@ -362,7 +362,7 @@ app.on('error', function (message) {
 
 db.connect("mongodb://localhost:27017/eventsDB", function (err) { // VK_eAPI or test
     if(err) { return console.log(err); }
-    app.listen(1337, function () {
+    app.listen(80, function () {
         console.log("API app started");
     });
 });
