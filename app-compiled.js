@@ -295,7 +295,7 @@ function StartAPI() {
 }
 
 //schedule.scheduleJob(rule, function(){
-//StartAPI();
+StartAPI();
 //});
 
 
