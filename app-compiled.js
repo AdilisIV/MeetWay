@@ -237,7 +237,7 @@ var func = function (c) {
 
                     for (var l = 0; l < id.length; l++) {
                         request.post({
-                            url: 'http://localhost:1337/events/' + CitiesID[c],
+                            url: 'http://localhost/events/' + CitiesID[c],
                             form: {
                                 id: id[l],
                                 name: name[l],
@@ -295,7 +295,7 @@ function StartAPI() {
 }
 
 //schedule.scheduleJob(rule, function(){
-StartAPI();
+//StartAPI();
 //});
 
 
@@ -344,7 +344,7 @@ db.connect("mongodb://localhost:27017/eventsDB", function (err) {
     if (err) {
         return console.log(err);
     }
-    app.listen(1337, function () {
+    app.listen(80, function () {
         console.log("API app started");
     });
 });
