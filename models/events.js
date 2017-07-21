@@ -40,7 +40,7 @@ exports.eventsByTime = function (cityid, x, y, callback) {
 
 
 exports.create = function (event, callback) {
-    db.get().collection('cityevents').insert(
+    db.get().collection('buffercollection').insert(
         event,
         function (err, result) {
             callback(err, result);

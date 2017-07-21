@@ -25,12 +25,11 @@ var schedule = require('node-schedule');
 var rule = new schedule.RecurrenceRule();
 rule.hour = new schedule.Range(0, 59, 8);
 
-//var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133','506'];
+var CitiesID = ['96', '1', '2', '10', '37', '153', '49', '60', '61', '72', '73', '95', '99', '104', '110', '119', '123', '151', '158', '133', '506'];
 
 var CitiesName = ['Нижний Тагил', 'Москва', 'Санкт-Петербург', 'Волгоград', 'Владивосток', 'Хабаровск', 'Екатеринбург', 'Казань', 'Калининград', 'Краснодар', 'Красноярск', 'Нижний Новгород', 'Новосибирск', 'Омск', 'Пермь', 'Ростов-на-Дону', 'Самара', 'Уфа', 'Челябинск', 'Сочи', "Санкт-Петербург-506"];
 
-//var ABC = ["в","с","до","от","к","по","и","на","за","для","фестиваль","МК","приз","ночь","концерт","розыгрыш","интенсив","через","забег","поход","фитнес","семинар","выставка"];
-
+var ABC = ["в", "с", "до", "от", "к", "по", "и", "на", "за", "для", "фестиваль", "МК", "приз", "ночь", "концерт", "розыгрыш", "интенсив", "через", "забег", "поход", "фитнес", "семинар", "выставка"];
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -41,19 +40,6 @@ function arrayUnique(arr) {
 }
 function compareStart(eventA, eventB) {
     return eventA.start - eventB.start;
-}
-function copyDataFromBuffer() {
-    setTimeout(function () {
-        console.log("copyDataFromBuffer: copyDataFromBuffer");
-
-        db.get().collection('cityevents').remove({});
-        //db.get().collection('buffercollection').copyTo('cityevents')
-        var documentsToMove = db.get().collection('buffercollection').find({});
-
-        documentsToMove.forEach(function (doc) {
-            db.get().collection('cityevents').insertOne(doc);
-        });
-    }, 500);
 }
 function setCities() {
     setTimeout(function () {
@@ -80,8 +66,8 @@ function setCities() {
 function RemoveDoubleDocuments(c) {
     setTimeout(function () {
         console.log('Запрос на удаление дублей в Mongodb');
-        db.get().collection('buffercollection').find({ "cityid": CitiesID[c] }, { id: 1 }).sort({ _id: 1 }).forEach(function (doc) {
-            db.get().collection('buffercollection').remove({
+        db.get().collection('cityevents').find({ "cityid": CitiesID[c] }, { id: 1 }).sort({ _id: 1 }).forEach(function (doc) {
+            db.get().collection('cityevents').remove({
                 _id: { $gt: doc._id },
                 id: doc.id
             }).catch(err => {
@@ -89,8 +75,8 @@ function RemoveDoubleDocuments(c) {
             });
         });
 
-        db.get().collection('buffercollection').find({ "cityid": CitiesID[c] }, { name: 1 }).sort({ _id: 1 }).forEach(function (doc) {
-            db.get().collection('buffercollection').remove({
+        db.get().collection('cityevents').find({ "cityid": CitiesID[c] }, { name: 1 }).sort({ _id: 1 }).forEach(function (doc) {
+            db.get().collection('cityevents').remove({
                 _id: { $gt: doc._id },
                 name: doc.name
             }).catch(err => {
@@ -265,7 +251,7 @@ var func = function (c) {
 
                     for (var l = 0; l < id.length; l++) {
                         request.post({
-                            url: 'http://localhost:1337/events/' + CitiesID[c],
+                            url: 'http://localhost/events/' + CitiesID[c],
                             form: {
                                 id: id[l],
                                 name: name[l],
@@ -301,13 +287,14 @@ var func = function (c) {
 };
 
 //var CitiesID = ['96','1','2','10','37','153','49','60'];
-var CitiesID = ['49'];
-var ABC = ["в", "с", "до", "от", "фестиваль"];
+//var CitiesID = ['49'];
+//var ABC = ["в","с","до","от","фестиваль"];
+
 
 function StartAPI() {
 
     setTimeout(function () {
-        db.get().collection('buffercollection').remove({}); // clear collection
+        db.get().collection('cityevents').remove({}); // clear collection
     }, 1000);
 
     auth.run().then(token => {
@@ -331,7 +318,6 @@ StartAPI();
 // Добавлены: Сочи
 //setCities();
 //insertDocuments();
-//copyDataFromBuffer();
 
 
 // API methods
@@ -373,9 +359,11 @@ db.connect("mongodb://localhost:27017/eventsDB", function (err) {
     if (err) {
         return console.log(err);
     }
-    app.listen(1337, function () {
+    app.listen(80, function () {
         console.log("API app started");
     });
 });
 
 //# sourceMappingURL=app-compiled.js.map
+
+//# sourceMappingURL=app-compiled-compiled.js.map
