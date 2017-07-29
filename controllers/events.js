@@ -44,6 +44,17 @@ exports.eventById = function (req, res) {
 };
 
 
+exports.eventsByTime = function (req, res) {
+    Events.eventsByTime(req.params.cityid, req.params.x, req.params.y, function (err, doc) {
+        if  (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(doc);
+    })
+};
+
+
 exports.create = function (req, res) {
     var event = {
         cityid: String(req.params.cityid),
@@ -56,7 +67,8 @@ exports.create = function (req, res) {
         latitude: Number(req.body.latitude),
         longitude: Number(req.body.longitude),
         description: req.body.description,
-        screenname: req.body.screenname
+        screenname: req.body.screenname,
+	    commerce: false
     };
 
     Events.create(event, function (err, result) {
@@ -86,7 +98,8 @@ exports.createCity = function (req, res) {
 
 
 exports.update = function (req, res) {
-    Events.update(req.params.id, { name: req.body.name }, function (err, result) {
+    Events.update(req.params.id, { $set: {commerce: req.body.commerce} },
+        function (err, result) {
         if (err) {
             console.log(err);
             return res.sendStatus(500);
@@ -94,7 +107,6 @@ exports.update = function (req, res) {
         res.sendStatus(200);
     })
 };
-
 
 exports.delete = function (req, res) {
     Events.delete(req.params.id, function (err, result) {

@@ -5,7 +5,7 @@ var ObjectID = require('mongodb').ObjectID;
 var db = require('../db');
 
 exports.all = function (callback) {
-    db.get().collection('cityevents').find().sort({"start": 1}).limit(400).toArray(function (err, docs) {
+    db.get().collection('cityevents').find().sort({"start": 1}).limit(1000).toArray(function (err, docs) {
         callback(err, docs);
     })
 };
@@ -19,7 +19,7 @@ exports.allcities = function (callback) {
 
 
 exports.findById = function (id, callback) {
-    db.get().collection('cityevents').find({ cityid: String(id) }).sort({"start": 1}).toArray(function (err, doc) {
+    db.get().collection('cityevents').find({ cityid: String(id) }).sort({"start": 1}).limit(400).toArray(function (err, doc) {
         callback(err, doc);
     })
 };
@@ -32,8 +32,15 @@ exports.eventById = function (id, callback) {
 };
 
 
+exports.eventsByTime = function (cityid, x, y, callback) {
+    db.get().collection('cityevents').find({cityid: cityid, start: { $gte:Number(x), $lte:Number(y) } }).sort({"start": 1}).toArray(function (err, doc) {
+        callback(err, doc);
+    })
+};
+
+
 exports.create = function (event, callback) {
-    db.get().collection('cityevents').insert(
+    db.get().collection('buffercollection').insert(
         event,
         function (err, result) {
             callback(err, result);
@@ -52,7 +59,7 @@ exports.createCity = function (city, callback) {
 
 exports.update = function (id, newData, callback) {
     db.get().collection('cityevents').updateOne(
-        { _id: ObjectID(id) },
+        { id: id },
         newData,
         function (err, result) {
             callback(err, result);

@@ -12,7 +12,14 @@ exports.connect = function (url, done) {
         return done();
     }
 
-    MongoClient.connect(url, function (err, db) {
+    const serverOptions = {
+        poolSize: 100,
+        autoReconnect: true,
+        socketTimeoutMS: 60000,
+        promiseLibrary: Promise
+    };
+
+    MongoClient.connect(url, serverOptions, function (err, db) {
         if (err) {
             return done(err);
         }
