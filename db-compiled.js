@@ -25,9 +25,11 @@ exports.connect = function (url, done) {
         }
         state.db = db;
         done();
-    })
+    });
 };
 
 exports.get = function () {
     return state.db;
-}
+};
+
+//# sourceMappingURL=db-compiled.js.map

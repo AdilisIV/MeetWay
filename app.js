@@ -8,6 +8,8 @@ var fs = require('fs');
 var app = express();
 const VK = require('vk-io');
 const { RequestError } = require('vk-io/errors'); // Возникает при проблемах в соединении или ответа сервера с ошибкой
+var Block = require("control-block").Block;
+var http = require("http");
 
 const vk = new VK({
     app: 5980502,
@@ -26,11 +28,11 @@ var rule = new schedule.RecurrenceRule();
 rule.hour = new schedule.Range(0, 59, 8);
 
 
-//var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133','506'];
+var CitiesID = ['96','1','2','10','37','153','49','60','61','72','73','95','99','104','110','119','123','151','158','133'];
 
-var CitiesName = ['Нижний Тагил','Москва','Санкт-Петербург','Волгоград','Владивосток','Хабаровск','Екатеринбург','Казань','Калининград','Краснодар','Красноярск','Нижний Новгород','Новосибирск','Омск','Пермь','Ростов-на-Дону','Самара','Уфа','Челябинск','Сочи', "Санкт-Петербург-506"];
+var CitiesName = ['Нижний Тагил','Москва','Санкт-Петербург','Волгоград','Владивосток','Хабаровск','Екатеринбург','Казань','Калининград','Краснодар','Красноярск','Нижний Новгород','Новосибирск','Омск','Пермь','Ростов-на-Дону','Самара','Уфа','Челябинск','Сочи'];
 
-//var ABC = ["в","с","до","от","к","по","и","на","за","для","фестиваль","МК","приз","ночь","концерт","розыгрыш","интенсив","через","забег","поход","фитнес","семинар","выставка"];
+var ABC = ["в","с","до","от","к","по","и","на","за","для","фестиваль","МК","приз","ночь","концерт","розыгрыш","интенсив","через","забег","поход","фитнес","семинар","выставка"];
 
 
 
@@ -52,7 +54,6 @@ function copyDataFromBuffer() {
         db.get().collection('cityevents').remove({})
         //db.get().collection('buffercollection').copyTo('cityevents')
         var documentsToMove = db.get().collection('buffercollection').find({});
-
         documentsToMove.forEach(function (doc) {
             db.get().collection('cityevents').insertOne(doc)
         })
@@ -61,7 +62,11 @@ function copyDataFromBuffer() {
 function setCities() {
     setTimeout(function(){
 
-        db.get().collection('cities').remove({}) // clear collection
+        db.get().collection('cities').remove({}, function (err, result) {
+            if (err) {
+                console.log(err)
+            }
+        }); // clear collection
 
         for (var l=0; l<CitiesID.length; l++) {
             request.post({
@@ -87,6 +92,11 @@ function RemoveDoubleDocuments(c) {
             db.get().collection('buffercollection').remove({
                 _id:{$gt:doc._id},
                 id: doc.id
+            },
+            function (err, result) {
+                if (err) {
+                    console.log(err)
+                }
             }).catch((err) => { console.error("Ошибка запросе на удаление дублей: ", err); })
         })
 
@@ -94,95 +104,15 @@ function RemoveDoubleDocuments(c) {
             db.get().collection('buffercollection').remove({
                 _id:{$gt:doc._id},
                 name: doc.name
+            },
+            function (err, result) {
+                if (err) {
+                    console.log(err)
+                }
             }).catch((err) => { console.error("Ошибка запросе на удаление дублей: ", err); })
         })
 
     }, 100)
-}
-
-
-function insertDocuments() {
-    setTimeout(function () {
-
-        console.log('insertDocuments')
-
-        db.get().collection('cityevents').remove({}) // clear collection
-
-        db.get().collection('cityevents').insert({
-            "cityid": "506",
-            "id": "27823606",
-            "name": "Фестиваль экологии Представь Зелёное: Движение",
-            "activity": "21 июл 2017 в 12:00",
-            "photo": "https://pp.userapi.com/c840122/v840122433/d956/RjmvJsLopuk.jpg",
-            "start": 1500620400,
-            "members": 3744,
-            "latitude": 59.932378,
-            "longitude": 30.321042,
-            "description": "Что общего между наукой, искусством, модой, архитектурой, косметикой и едой? Все эти сферы могут быть экологичными - созданными с заботой о природе и человеке. На большом фестивале экологии Представь Зелёное гости смогут:  - Посетить познавательные лекции, эко-маркет, выставки арт-объектов, кинопоказы, спектакли о планете и концерты;  - Поиграть в настольные эко-игры и квесты;  - Поучаствовать в круглых столах, мастер-классах по рециклинг-творчеству и в кулинарных вегетарианских мастер-классах от общественных организаций и заведений города.",
-            "screenname": "https://m.vk.com/club27823606",
-            "commerce": false
-        })
-
-        db.get().collection('cityevents').insert({
-            "cityid": "506",
-            "id": "32814569",
-            "name": "Интеллигентная барахолка - дизайн-маркет в СПБ",
-            "activity": "21 июл 2017 в 13:00",
-            "photo": "https://pp.userapi.com/c836528/v836528609/48605/G4iAW2aXBDM.jpg",
-            "start": 1500631200,
-            "members": 14795,
-            "latitude": 59.92887,
-            "longitude": 30.344219,
-            "description": "Интеллигентная барахолка – дизайн-маркет с четырехлетней историей, особой атмосферой и непростым характером; большой, нарядный и разношерстный праздник экзальтированных дам, понаехавших денди и петербургских модников.",
-            "screenname": "https://m.vk.com/club32814569",
-            "commerce": false
-        })
-
-        db.get().collection('cityevents').insert({
-            "cityid": "506",
-            "id": "150196755",
-            "name": "Рисование вином и дегустация. СПБ - 21 июля",
-            "activity": "21 июл 2017 в 13:00",
-            "photo": "https://pp.userapi.com/c638830/v638830146/4893e/i4-NkrRqsvs.jpg",
-            "start": 1500634800,
-            "members": 5,
-            "latitude": 0,
-            "longitude": 0,
-            "description": "Новый проект от [club96773634|Студии Рисования&#9679;ZUART&#9679;] и винного клуба [club147593638|ART of Wine]! Арт-дегустация – это новый формат мероприятия, соединяющий в себе живопись и винное искусство. В этот вечер мы продегустируем 3 бутылочки изысканного вина и нарисуем картину вином! Наш проект создан для творческих людей, кто увлекается искусством, современными техниками рисования и кто любит дегустировать эксклюзивные вина или хотел бы научиться в них разбираться.",
-            "screenname": "https://m.vk.com/club150196755",
-            "commerce": false
-        })
-
-        db.get().collection('cityevents').insert({
-            "cityid": "506",
-            "id": "78907820",
-            "name": "ВЕГАН ФЕСТ | До встречи осенью!",
-            "activity": "21 июл 2017 в 14:00",
-            "photo": "https://pp.userapi.com/c639828/v639828106/25399/6-1TeHOeUAw.jpg",
-            "start": 1500635900,
-            "members": 5230,
-            "latitude": 59.950767,
-            "longitude": 30.245988,
-            "description": "– Ваша любимая веганская еда и продукция этичных производителей; – интересные лекции и полезные мастер-классы; – спорт, веселье, игры и общение; – игровая и образовательная программа для деток; – дегустации, конкурсы и подарки! Вход бесплатный!",
-            "screenname": "https://m.vk.com/club78907820",
-            "commerce": false
-        })
-
-	db.get().collection('cityevents').insert({
-        	"cityid": "506",
-        	"id": "110931219",
-        	"name": "Мастер-класс от 78 Glass. МК по стеклодувному мастерству",
-        	"activity": "21 июл 2017 в 14:00",
-        	"photo": "https://pp.userapi.com/c604819/v604819831/3c587/igEaS2bT5QQ.jpg",
-        	"start" : 1500636900,
-        	"members" : 87,
-        	"latitude" : 0,
-        	"longitude" : 0, 
-        	"description": "Cерия индивидуальных мастер-классов. Записывайтесь в удобное для Вас время. В рамках мастер-класса Вам (участнику или группе участников 2-3 человека) представится возможность поработать за стеклодувными горелками, познакомиться с физикой стекла, освоить базовые техники работы и декорирования. Все необходимое оборудования для работы предоставляется. Стоимость участия: 5000 рублей. Продолжительность: 2-3 часа. Запись и расписание уточняйте в сообщениях сообщества. Мастерская находится на улице Профессора Попова 38. (метро Петрогадская / Чкаловская )",
-                "screenname": "https://m.vk.com/club110931219",
-                "commerce": false
-        })
-    }, 1000)
 }
 
 
@@ -207,9 +137,14 @@ var func = function (c) {
                 .then((group) => {
                     var result = [];
                     console.log('Поиское слово: ', ABC[j]);
+                    try {
+                        var groupObj = JSON.stringify(group);
+                    } catch(err) { console.error("JSON.stringify error: ", err); }
 
-                    var groupObj = JSON.stringify(group);
-                    var groupJSON = JSON.parse(groupObj);
+                    try {
+                        var groupJSON = JSON.parse(groupObj);
+                    } catch(err) { console.error("JSON.parse error: ", err); }
+
                     for (var i = 0; i < groupJSON.items.length; i++) {
                         result.push(groupJSON.items[i].screen_name); // все id по словарю для заданного города
                     }
@@ -219,92 +154,117 @@ var func = function (c) {
                     return result;
                 })
                 .then(function (result) {
-                    //console.log(result)
-                    vk.api.groups.getById({
-                            group_ids: result,
-                            fields: 'members_count,start_date,activity,place,description'
-                        })
-                        .catch(RequestError,(error) => {
-                            console.error(`RequestError error №${error.code} ${error.message}`);
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                        })
-                        .then((data) => {
-                            var dataObj = JSON.stringify(data);
-                            var dataJSON = JSON.parse(dataObj);
-
-                            var id = [];
-                            var name = [];
-                            var activity = [];
-                            var photo = [];
-                            var start = [];
-                            var members = [];
-                            var latitude = [];
-                            var longitude = [];
-                            var description = [];
-                            var screenname = [];
-                            var commerce = [];
-
-                            for (var i = 0; i < dataJSON.length; i++) {
-                                if ((dataJSON[i].members_count > 4) || (dataJSON[i].is_closed == 0)) {
-                                    if (dataJSON[i].place) {
-                                        latitude.push(dataJSON[i].place.latitude);
-                                        longitude.push(dataJSON[i].place.longitude);
-                                    } else {
-                                        latitude.push(0);
-                                        longitude.push(0);
-                                    }
-
-                                    if(dataJSON[i].description != "") {
-                                        description.push(dataJSON[i].description);
-                                    } else {
-                                        description.push("Упс, видимо организаторы мероприятия решили не добавлять описание. :(");
-                                    }
-
-                                    id.push(dataJSON[i].id);
-                                    name.push(dataJSON[i].name);
-                                    activity.push(dataJSON[i].activity);
-                                    photo.push(dataJSON[i].photo_200);
-                                    start.push(dataJSON[i].start_date);
-                                    members.push(dataJSON[i].members_count);
-                                    screenname.push("https://m.vk.com/club" + dataJSON[i].id);
-                                    commerce.push(false);
+                    if (result == []) {
+                        console.log("Мероприятия по запросу отсутствуют!")
+                    } else {
+                        vk.api.groups.getById({
+                                group_ids: result,
+                                fields: 'members_count,start_date,activity,place,description'
+                            })
+                            .catch(RequestError,(error) => {
+                                console.error(`RequestError error №${error.code} ${error.message}`);
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            })
+                            .then((data) => {
+                                try {
+                                    var dataObj = JSON.stringify(data);
+                                } catch(err) { console.error("JSON.stringify error: ", err); }
+                                try {
+                                    var dataJSON = JSON.parse(dataObj);
+                                } catch(err) {
+                                    console.error("JSON.parse error: ", err);
                                 }
-                            }
 
-                            for (var l=0; l<id.length; l++) {
-                                request.post({
-                                    url: 'http://localhost:1337/events/'+CitiesID[c],
-                                    form: {
-                                        id: id[l],
-                                        name: name[l],
-                                        activity: activity[l],
-                                        photo: photo[l],
-                                        start: start[l],
-                                        members: members[l],
-                                        latitude: latitude[l],
-                                        longitude: longitude[l],
-                                        description: description[l],
-                                        screenname: screenname[l],
-                                        commerce: commerce[l]
+                                var id = [];
+                                var name = [];
+                                var activity = [];
+                                var photo = [];
+                                var start = [];
+                                var members = [];
+                                var latitude = [];
+                                var longitude = [];
+                                var description = [];
+                                var screenname = [];
+                                var commerce = [];
+
+                                for (var i = 0; i < dataJSON.length; i++) {
+                                    if ((dataJSON[i].members_count > 4) || (dataJSON[i].is_closed == 0)) {
+                                        if (dataJSON[i].place) {
+                                            latitude.push(dataJSON[i].place.latitude);
+                                            longitude.push(dataJSON[i].place.longitude);
+                                        } else {
+                                            latitude.push(0);
+                                            longitude.push(0);
+                                        }
+
+                                        if(dataJSON[i].description != "") {
+                                            description.push(dataJSON[i].description);
+                                        } else {
+                                            description.push("Упс, видимо организаторы мероприятия решили не добавлять описание. :(");
+                                        }
+
+                                        id.push(dataJSON[i].id);
+                                        name.push(dataJSON[i].name);
+                                        activity.push(dataJSON[i].activity);
+                                        photo.push(dataJSON[i].photo_200);
+                                        start.push(dataJSON[i].start_date);
+                                        members.push(dataJSON[i].members_count);
+                                        screenname.push("https://m.vk.com/club" + dataJSON[i].id);
+                                        commerce.push(false);
                                     }
-                                }, function (err, res, body) {
-                                    if (err) {
-                                        console.log(err);
-                                    } else if (body) {
-                                        //console.log(body);
-                                    }
-                                });
-                            }
-                        })
-                        .then(() => {
-                            console.log('Параметр "с" перед удалением дублей: ', c);
-                            RemoveDoubleDocuments(c);
-                        })
-                        .catch((error) => {
-                            console.error(error);
-                        })
+                                }
+
+                                for (var l=0; l<id.length; l++) {
+
+                                    var req = request.post({
+                                        url: 'http://localhost:1337/events/'+CitiesID[c],
+                                        form: {
+                                            id: id[l],
+                                            name: name[l],
+                                            activity: activity[l],
+                                            photo: photo[l],
+                                            start: start[l],
+                                            members: members[l],
+                                            latitude: latitude[l],
+                                            longitude: longitude[l],
+                                            description: description[l],
+                                            screenname: screenname[l],
+                                            commerce: commerce[l]
+                                        },
+                                        options: {
+                                            headers: {
+                                                'Content-Type': 'application/json',
+                                                'Content-Length': Buffer.byteLength(data)
+                                            }
+                                        }
+                                    }, function (err, res, body) {
+                                        if (err) {
+                                            console.log(err);
+                                        } else if (body) {
+                                            //console.log(body);
+                                        }
+                                    });
+                                    req.on('error', function () {
+                                        //Block.errorHandler();
+                                        console.error("request.post error!");
+                                    });
+                                    process.on('uncaughtException', function (err) {
+                                        console.log("Тот самый uncaughtException !!!");
+                                        console.error(err.stack);
+                                        //process.exit();
+                                    });
+                                }
+                            })
+                            .then(() => {
+                                console.log('Параметр "с" перед удалением дублей: ', c);
+                                RemoveDoubleDocuments(c);
+                            })
+                            .catch((error) => {
+                                console.error(error);
+                            })
+                    }
                 })
                 .catch((error) => {
                     console.error(error);
@@ -314,15 +274,22 @@ var func = function (c) {
 }
 
 
-//var CitiesID = ['96','1','2','10','37','153','49','60'];
-var CitiesID = ['49'];
-var ABC = ["в","с","до","от","фестиваль"];
+//var CitiesID = ['96','1','2','10'];
+//var CitiesID = ['96','49'];
+//var ABC = ["в","с","до","от","фестиваль"];
 
 
 function StartAPI() {
 
     setTimeout(function() {
-        db.get().collection('buffercollection').remove({}) // clear collection
+        db.get().collection('buffercollection').remove(
+            {},
+            function (err, result) {
+                if (err) {
+                    console.log(err);
+                }
+            }
+        ) // clear collection
     }, 1000)
 
     auth.run()
@@ -335,10 +302,14 @@ function StartAPI() {
         })
         .then(() => {
             for (var c = 0; c<CitiesID.length; c++) {
-                setTimeout(func(c), 15000 * c);
+                setTimeout(func(c), 80000 * c);
             }
         })
 }
+
+
+
+
 
 //schedule.scheduleJob(rule, function(){
 StartAPI();
@@ -347,7 +318,7 @@ StartAPI();
 
 
 // Установка списка городов
-// Добавлены: Сочи
+// Добавлены: Сочи-153
 //setCities();
 //insertDocuments();
 //copyDataFromBuffer();
@@ -381,8 +352,23 @@ app.delete('/events/:id', eventsController.delete);
 
 app.delete('events/remove', eventsController.deleteDouble);
 
-app.use(function (err, req, res, next)  {
-    res.status(err.status || 500);
+
+
+
+var exit = function exit() {
+    setTimeout(function () {
+        process.exit(1);
+    }, 0);
+};
+
+app.use(function (error, req, res, next) {
+    if (error.status === 400) {
+        log.info(error.body);
+        return res.send(400);
+    }
+
+    log.error(error);
+    exit();
 });
 
 app.on('error', function (message) {
