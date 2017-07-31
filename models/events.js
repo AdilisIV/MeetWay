@@ -39,17 +39,34 @@ exports.eventsByTime = function (cityid, x, y, callback) {
 };
 
 
-exports.create = function (event, callback) {
-    db.get().collection('buffercollection').insert(
-        event,
+exports.create = function (events, callback) {
+
+    // var bulk = db.get().collection('buffercollection').initializeUnorderedBulkOp();
+    // bulk.insert(events);
+    // bulk.execute();
+    db.get().collection('buffercollection').insertOne(
+        events,
+        {},
         function (err, result) {
             callback(err, result);
-        })
+        }
+    )
+};
+
+
+exports.superCreate = function (events, callback) {
+
+    db.get().collection('buffercollection').insertOne(
+        events,
+        function (err, result) {
+            callback(err, result);
+        }
+    )
 };
 
 
 exports.createCity = function (city, callback) {
-    db.get().collection('cities').insert(
+    db.get().collection('cities').insertOne(
         city,
         function (err, result) {
             callback(err, result);
@@ -93,7 +110,8 @@ exports.deleteDouble = function (callback) {
             latitude: doc.latitude,
             longitude: doc.longitude,
             description: doc.description,
-            screenname: doc.screenname
+            screenname: doc.screenname,
+            commerce: doc.commerce
         });
     })
 };

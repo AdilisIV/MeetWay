@@ -25,16 +25,16 @@ var Nightmare = require('nightmare');
 nightmare = Nightmare({ show: true, dock: true });
 var schedule = require('node-schedule');
 var rule = new schedule.RecurrenceRule();
-rule.hour = new schedule.Range(0, 59, 8);
+rule.hour = new schedule.Range(0, 59, 7);
 
-var CitiesID = ['96', '1', '2', '10', '37', '153', '49', '60', '61', '72', '73', '95', '99', '104', '110', '119', '123', '151', '158', '133'];
+var CitiesID = ['1', '2', '49', '96', '10', '37', '153', '60', '61', '72', '73', '95', '99', '104', '110', '119', '123', '151', '158', '133'];
 
-var CitiesName = ['Нижний Тагил', 'Москва', 'Санкт-Петербург', 'Волгоград', 'Владивосток', 'Хабаровск', 'Екатеринбург', 'Казань', 'Калининград', 'Краснодар', 'Красноярск', 'Нижний Новгород', 'Новосибирск', 'Омск', 'Пермь', 'Ростов-на-Дону', 'Самара', 'Уфа', 'Челябинск', 'Сочи'];
+var CitiesName = ['Москва', 'Санкт-Петербург', 'Екатеринбург', 'Нижний Тагил', 'Волгоград', 'Владивосток', 'Хабаровск', 'Казань', 'Калининград', 'Краснодар', 'Красноярск', 'Нижний Новгород', 'Новосибирск', 'Омск', 'Пермь', 'Ростов-на-Дону', 'Самара', 'Уфа', 'Челябинск', 'Сочи'];
 
 var ABC = ["в", "с", "до", "от", "к", "по", "и", "на", "за", "для", "фестиваль", "МК", "приз", "ночь", "концерт", "розыгрыш", "интенсив", "через", "забег", "поход", "фитнес", "семинар", "выставка"];
 
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 const auth = vk.auth.standalone();
 
 function arrayUnique(arr) {
@@ -48,13 +48,13 @@ function copyDataFromBuffer() {
         console.log("copyDataFromBuffer: copyDataFromBuffer");
 
         db.get().collection('cityevents').remove({});
-        //db.get().collection('buffercollection').copyTo('cityevents')
         var documentsToMove = db.get().collection('buffercollection').find({});
         documentsToMove.forEach(function (doc) {
             db.get().collection('cityevents').insertOne(doc);
         });
     }, 500);
 }
+
 function setCities() {
     setTimeout(function () {
 
@@ -92,8 +92,6 @@ function RemoveDoubleDocuments(c) {
                 if (err) {
                     console.log(err);
                 }
-            }).catch(err => {
-                console.error("Ошибка запросе на удаление дублей: ", err);
             });
         });
 
@@ -105,14 +103,14 @@ function RemoveDoubleDocuments(c) {
                 if (err) {
                     console.log(err);
                 }
-            }).catch(err => {
-                console.error("Ошибка запросе на удаление дублей: ", err);
             });
         });
     }, 100);
 }
 
 var func = function (c) {
+    db.get().close();
+    db.get().open();
     return function () {
         for (var j = 0; j < ABC.length; j++) {
             vk.api.groups.search({
@@ -171,84 +169,76 @@ var func = function (c) {
                             console.error("JSON.parse error: ", err);
                         }
 
-                        var id = [];
-                        var name = [];
-                        var activity = [];
-                        var photo = [];
-                        var start = [];
-                        var members = [];
-                        var latitude = [];
-                        var longitude = [];
-                        var description = [];
-                        var screenname = [];
-                        var commerce = [];
+                        var screenname;
+                        var latitude;
+                        var longitude;
+
+                        var eventObject;
 
                         for (var i = 0; i < dataJSON.length; i++) {
                             if (dataJSON[i].members_count > 4 || dataJSON[i].is_closed == 0) {
-                                if (dataJSON[i].place) {
-                                    latitude.push(dataJSON[i].place.latitude);
-                                    longitude.push(dataJSON[i].place.longitude);
+                                if (!dataJSON[i].place) {
+                                    latitude = 0;
+                                    longitude = 0;
                                 } else {
-                                    latitude.push(0);
-                                    longitude.push(0);
+                                    latitude = dataJSON[i].place.latitude;
+                                    longitude = dataJSON[i].place.longitude;
                                 }
 
-                                if (dataJSON[i].description != "") {
-                                    description.push(dataJSON[i].description);
-                                } else {
-                                    description.push("Упс, видимо организаторы мероприятия решили не добавлять описание. :(");
+                                if (dataJSON[i].description == "") {
+                                    dataJSON[i].description = "Упс, видимо организаторы мероприятия решили не добавлять описание. :(";
                                 }
 
-                                id.push(dataJSON[i].id);
-                                name.push(dataJSON[i].name);
-                                activity.push(dataJSON[i].activity);
-                                photo.push(dataJSON[i].photo_200);
-                                start.push(dataJSON[i].start_date);
-                                members.push(dataJSON[i].members_count);
-                                screenname.push("https://m.vk.com/club" + dataJSON[i].id);
-                                commerce.push(false);
-                            }
-                        }
+                                screenname = "https://m.vk.com/club" + dataJSON[i].id;
 
-                        for (var l = 0; l < id.length; l++) {
+                                eventObject = {
+                                    cityid: CitiesID[c],
+                                    id: dataJSON[i].id,
+                                    name: dataJSON[i].name,
+                                    activity: dataJSON[i].activity,
+                                    photo: dataJSON[i].photo_200,
+                                    start: dataJSON[i].start_date,
+                                    members: Number(dataJSON[i].members_count),
+                                    latitude: latitude,
+                                    longitude: longitude,
+                                    description: dataJSON[i].description,
+                                    screenname: screenname,
+                                    commerce: false
+                                };
 
-                            var req = request.post({
-                                url: 'http://localhost:1337/events/' + CitiesID[c],
-                                form: {
-                                    id: id[l],
-                                    name: name[l],
-                                    activity: activity[l],
-                                    photo: photo[l],
-                                    start: start[l],
-                                    members: members[l],
-                                    latitude: latitude[l],
-                                    longitude: longitude[l],
-                                    description: description[l],
-                                    screenname: screenname[l],
-                                    commerce: commerce[l]
-                                },
-                                options: {
-                                    headers: {
-                                        'Content-Type': 'application/json',
-                                        'Content-Length': Buffer.byteLength(data)
+                                var req = request.post({
+                                    url: 'http://localhost:1337/events',
+                                    form: {
+                                        cityid: eventObject.cityid,
+                                        id: eventObject.id,
+                                        name: eventObject.name,
+                                        activity: eventObject.activity,
+                                        photo: eventObject.photo,
+                                        start: eventObject.start,
+                                        members: eventObject.members,
+                                        latitude: eventObject.latitude,
+                                        longitude: eventObject.longitude,
+                                        description: eventObject.description,
+                                        screenname: eventObject.screenname,
+                                        commerce: eventObject.commerce
                                     }
-                                }
-                            }, function (err, res, body) {
-                                if (err) {
-                                    console.log(err);
-                                } else if (body) {
-                                    //console.log(body);
-                                }
-                            });
-                            req.on('error', function () {
-                                //Block.errorHandler();
-                                console.error("request.post error!");
-                            });
-                            process.on('uncaughtException', function (err) {
-                                console.log("Тот самый uncaughtException !!!");
-                                console.error(err.stack);
-                                //process.exit();
-                            });
+                                }, function (err, res, body) {
+                                    if (err) {
+                                        console.log(err);
+                                    } else if (body) {
+                                        //console.log(body);
+                                    }
+                                });
+                                req.on('error', function () {
+                                    //Block.errorHandler();
+                                    console.error("request.post error!");
+                                });
+                                process.on('uncaughtException', function (err) {
+                                    console.log("Тот самый uncaughtException !!!");
+                                    console.error(err.stack);
+                                    //process.exit();
+                                });
+                            }
                         }
                     }).then(() => {
                         console.log('Параметр "с" перед удалением дублей: ', c);
@@ -264,19 +254,18 @@ var func = function (c) {
     };
 };
 
-//var CitiesID = ['96','1','2','10'];
-//var CitiesID = ['96','49'];
-//var ABC = ["в","с","до","от","фестиваль"];
+//var CitiesID = ['96'];
+//var ABC = ["в", "с", "за", "на"];
 
 
 function StartAPI() {
 
     setTimeout(function () {
-        db.get().collection('buffercollection').remove({}, function (err, result) {
+        db.get().collection('buffercollection').removeMany({}, function (err, result) {
             if (err) {
                 console.log(err);
             }
-        }); // clear collection
+        });
     }, 1000);
 
     auth.run().then(token => {
@@ -319,7 +308,7 @@ app.get('/cities', eventsController.allcities);
 
 app.get('/events/eventsByTime/:cityid/:x/:y', eventsController.eventsByTime);
 
-app.post('/events/:cityid', eventsController.create);
+app.post('/events', eventsController.create);
 
 app.post('/cities', eventsController.createCity);
 
@@ -337,17 +326,19 @@ var exit = function exit() {
 
 app.use(function (error, req, res, next) {
     if (error.status === 400) {
-        log.info(error.body);
+        console.info(error.body);
         return res.send(400);
     }
 
-    log.error(error);
+    console.error(error);
     exit();
 });
 
 app.on('error', function (message) {
     console.error("[ERROR]: ", message);
 });
+
+app.setMaxListeners(1000);
 
 db.connect("mongodb://localhost:27017/eventsDB", function (err) {
     // VK_eAPI or test

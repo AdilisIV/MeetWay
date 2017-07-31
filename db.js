@@ -15,7 +15,8 @@ exports.connect = function (url, done) {
     const serverOptions = {
         poolSize: 100,
         autoReconnect: true,
-        socketTimeoutMS: 60000,
+        socketTimeoutMS: 120000,
+        keepAlive: 30000,
         promiseLibrary: Promise
     };
 

@@ -1,4 +1,5 @@
 var Events = require('../models/events');
+var db = require('../db');
 
 exports.all = function (req, res) {
     Events.all(function (err, docs) {
@@ -56,8 +57,9 @@ exports.eventsByTime = function (req, res) {
 
 
 exports.create = function (req, res) {
+    console.log("HUUUUUUUUUUUUUUUUUUUUY!!!")
     var event = {
-        cityid: String(req.params.cityid),
+        cityid: req.body.cityid,
         id: req.body.id,
         name: req.body.name,
         activity: req.body.activity,
@@ -72,6 +74,21 @@ exports.create = function (req, res) {
     };
 
     Events.create(event, function (err, result) {
+        if (err) {
+            console.log(err);
+            return res.sendStatus(500);
+        }
+        res.send(event);
+    })
+};
+
+
+exports.superCreate = function (req, res) {
+
+    var event = req.body.eventarr;
+    //console.log(event);
+
+    Events.superCreate(event, function (err, result) {
         if (err) {
             console.log(err);
             return res.sendStatus(500);
