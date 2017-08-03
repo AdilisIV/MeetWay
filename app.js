@@ -24,15 +24,18 @@ var jquery = require('jquery');
 var Nightmare = require('nightmare');
 nightmare = Nightmare({ show: true, dock: true });
 var schedule = require('node-schedule');
-var rule = new schedule.RecurrenceRule();
-rule.hour = new schedule.Range(0, 59, 7);
+//var rule = new schedule.RecurrenceRule();
+//rule.hour = new schedule.Range(0, 59, 7);
 
 
 var CitiesID = ['1','2','49','96','10','37','153','60','61','72','73','95','99','104','110','119','123','151','158','133'];
 
 var CitiesName = ['Москва','Санкт-Петербург','Екатеринбург','Нижний Тагил','Волгоград','Владивосток','Хабаровск','Казань','Калининград','Краснодар','Красноярск','Нижний Новгород','Новосибирск','Омск','Пермь','Ростов-на-Дону','Самара','Уфа','Челябинск','Сочи'];
 
-var ABC = ["в","с","до","от","к","по","и","на","за","для","фестиваль","МК","приз","ночь","концерт","розыгрыш","интенсив","через","забег","поход","фитнес","семинар","выставка"];
+//var ABC = ["в","с","до","от","к","по","и","на","за","для","фестиваль","МК","приз","ночь","концерт","розыгрыш","интенсив","через","забег","поход","фитнес","семинар","выставка"];
+//var ABC = ["в","с","до","от","к","2017","марафон","велопробег","школа","утро","сходка","по","и","на","за","для","фестиваль","уроки","встреча","отдых","МК","выиграй","спектакль","кубок","приз","репост","ночь","концерт","турнир","розыгрыш","тренинг","интенсив","через","клуб","забег","бизнес","хутор","поход","фитнес","сказка","семинар","выставка","день","|"];
+//var ABC = ["в","с","до","от","к","2017","по","и","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","выиграй","спектакль","кубок","приз","репост","ночь","концерт","турнир","розыгрыш","тренинг","интенсив","через","клуб","забег","бизнес","хутор","поход","фитнес","сказка","семинар","выставка"];
+var ABC = ["в","с","до","от","к","2017","марафон","велопробег","школа","утро","сходка","по","и","на","за","для","фестиваль","день","уроки","встреча","отдых","МК","выиграй","спектакль","кубок","приз","репост","ночь","концерт","турнир","розыгрыш","интенсив","через","клуб","забег","хутор","поход","фитнес","сказка","семинар","выставка"];
 
 
 app.use(bodyParser.json({limit: '50mb'}));
@@ -48,7 +51,8 @@ function compareStart(eventA, eventB) {
 }
 function copyDataFromBuffer() {
     setTimeout(function () {
-        console.log("copyDataFromBuffer: copyDataFromBuffer");
+	var now = new Date();
+        console.log("copyDataFromBuffer: ", now);
 
         db.get().collection('cityevents').remove({})
         var documentsToMove = db.get().collection('buffercollection').find({});
@@ -220,7 +224,7 @@ var func = function (c) {
 
 
                                         var req = request.post({
-                                            url: 'http://localhost:1337/events',
+                                            url: 'http://localhost/events',
                                             form: {
                                                 cityid: eventObject.cityid,
                                                 id: eventObject.id,
@@ -308,10 +312,14 @@ function StartAPI() {
 
 
 
-
-//schedule.scheduleJob(rule, function(){
+schedule.scheduleJob('15 */5 * * *', function() {
     StartAPI();
-//});
+});
+
+
+schedule.scheduleJob('55 */5 * * *', function() {
+    copyDataFromBuffer();
+});
 
 
 
@@ -377,7 +385,7 @@ app.setMaxListeners(1000);
 
 db.connect("mongodb://localhost:27017/eventsDB", function (err) { // VK_eAPI or test
     if(err) { return console.log(err); }
-    app.listen(1337, function () {
+    app.listen(80, function () {
         console.log("API app started");
     });
 });

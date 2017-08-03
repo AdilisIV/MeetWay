@@ -57,7 +57,7 @@ exports.eventsByTime = function (req, res) {
 
 
 exports.create = function (req, res) {
-    console.log("HUUUUUUUUUUUUUUUUUUUUY!!!")
+    console.log("Recorded")
     var event = {
         cityid: req.body.cityid,
         id: req.body.id,
